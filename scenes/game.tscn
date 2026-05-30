@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://b8n3wuqkjbyri"]
+
+[ext_resource type="Script" uid="uid://bwpyh8uvfkxmp" path="res://scripts/game.gd" id="1_uwrxv"]
+
+[node name="game" type="Node2D" unique_id=133573637]
+script = ExtResource("1_uwrxv")
+
+[node name="HUD" type="Node2D" parent="." unique_id=1781228328]
+
+[node name="TopBar" type="Panel" parent="HUD" unique_id=1793633193]
+custom_minimum_size = Vector2(0, 48)
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/TopBar" unique_id=1919288888]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 32
+
+[node name="Graines" type="HBoxContainer" parent="HUD/TopBar/HBoxContainer" unique_id=1536545844]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HUD/TopBar/HBoxContainer/Graines" unique_id=1359918531]
+layout_mode = 2
+text = "Nombre de graines : 10"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HUD/TopBar/HBoxContainer" unique_id=1096993703]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HUD/TopBar/HBoxContainer/HBoxContainer2" unique_id=1890856107]
+layout_mode = 2
+text = "Avancement des humains : 10%"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="HUD/TopBar/HBoxContainer" unique_id=757735851]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HUD/TopBar/HBoxContainer/HBoxContainer3" unique_id=591102]
+layout_mode = 2
+text = "Tour : 5"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="HUD/TopBar/HBoxContainer" unique_id=1421146453]
+layout_mode = 2
+
+[node name="Map" type="Node2D" parent="." unique_id=1434601639]

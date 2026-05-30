@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cyoq0bv6qtrke"]
+
+[ext_resource type="Script" uid="uid://cm8b4ulbkaqwh" path="res://scripts/tile.gd" id="1_3dk36"]
+
+[node name="tile" type="Node2D" unique_id=1264344581]
+script = ExtResource("1_3dk36")
+
+[node name="Sprite2D" type="ColorRect" parent="." unique_id=803208586]
+custom_minimum_size = Vector2(160, 160)
+
+[node name="Highlight" type="ColorRect" parent="." unique_id=51563592]
+offset_right = 160.0
+offset_bottom = 160.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.18431373)

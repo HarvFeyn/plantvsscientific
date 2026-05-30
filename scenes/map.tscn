@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bowvgte8jgqkh"]
+
+[ext_resource type="Script" uid="uid://d5f4yo24k2p5" path="res://scripts/map.gd" id="1_4xfga"]
+[ext_resource type="PackedScene" uid="uid://cyoq0bv6qtrke" path="res://scenes/tile.tscn" id="2_paxxb"]
+
+[node name="Map" type="Node2D" unique_id=961880429]
+script = ExtResource("1_4xfga")
+tile_scene = ExtResource("2_paxxb")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1622273735]
+position = Vector2(576, 434)
+limit_enabled = false
+position_smoothing_enabled = true
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=693239158]
+
+[node name="GridContainer" type="GridContainer" parent="." unique_id=2068050858]
+offset_right = 40.0
+offset_bottom = 40.0
