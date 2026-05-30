@@ -11,7 +11,24 @@ const SCENE_GAME := "res://scenes/game.tscn"
 var is_paused: bool = false
 var high_score: int = 0
 
+signal turn_changed(turn_number: int)
+var current_turn: int = 1
 
+signal graines_changed(value: int)
+var graines: int = 0 : set = _set_graines
+
+signal avancement_changed(value: float)
+
+var avancement_enemy: float = 0.0 : set = _set_avancement
+
+func _set_avancement(value: float) -> void:
+	avancement_enemy = clamp(value, 0.0, 100.0)
+	avancement_changed.emit(avancement_enemy)
+	
+func _set_graines(value: int) -> void:
+	graines = value
+	graines_changed.emit(graines)
+	
 # --- Navigation rapide ---
 
 func start_game() -> void:
@@ -40,3 +57,8 @@ func set_pause(value: bool) -> void:
 
 func quit_game() -> void:
 	get_tree().quit()
+
+
+func next_turn() -> void:
+	current_turn += 1
+	turn_changed.emit(current_turn)

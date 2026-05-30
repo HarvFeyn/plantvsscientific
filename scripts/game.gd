@@ -1,18 +1,164 @@
 extends Node2D
 
+# ── Configuration caméra ──────────────────────────────────────
+const CAM_SPEED    := 600.0
+
+# ── Références ────────────────────────────────────────────────
+@onready var cam: Camera2D = $Camera2D
+@onready var map: Node2D   = $Map
+@onready var btn_next_turn: Button = $HUD/TopBar/Buttons/BtnNextTurn
+@onready var btn_reset:     Button = $HUD/TopBar/Buttons/BtnResets
+const COUT_INFESTION: int = 10
+
 func _ready() -> void:
-	# Assure que le jeu n'est pas en pause en arrivant ici
 	GameManager.set_pause(false)
- 
- 
+	cam.make_current()
+	_setup_camera()
+	map.connect("tile_selected", _on_tile_selected)
+	
+	GameManager.turn_changed.connect(_on_turn_changed)
+	GameManager.graines_changed.connect(_on_graines_changed)
+	GameManager.avancement_changed.connect(_on_avancement_changed)
+	
+func _process(delta: float) -> void:
+	_handle_camera(delta)
+
 func _unhandled_input(event: InputEvent) -> void:
-	# Échap pour retourner au menu (pratique en jam)
 	if event.is_action_pressed("ui_cancel"):
 		GameManager.go_to_menu()
- 
- 
-# Appelle cette fonction quand le joueur perd
+
+# ── Caméra ────────────────────────────────────────────────────
+
+func _setup_camera() -> void:
+	var map_size: Vector2 = map.get_map_size()
+	cam.limit_left   = 0
+	cam.limit_top    = -100  # permet à la caméra de voir sous la TopBar
+	cam.limit_right  = int(map_size.x)
+	cam.limit_bottom = int(map_size.y)
+	cam.position     = Vector2(0, 100)  # démarre sous la TopBar
+	cam.offset       = Vector2.ZERO
+
+func _handle_camera(delta: float) -> void:
+	var dir := Vector2.ZERO
+	if Input.is_action_pressed("move_left"):  dir.x -= 1
+	if Input.is_action_pressed("move_right"): dir.x += 1
+	if Input.is_action_pressed("move_up"):    dir.y -= 1
+	if Input.is_action_pressed("move_down"):  dir.y += 1
+
+
+# ── Tuile sélectionnée ────────────────────────────────────────
+
+func _on_tile_selected(tile) -> void:
+	if tile.is_infested:
+		return
+	
+	# Vérifie qu'au moins un voisin est infesté
+	var neighbors: Array = map.get_neighbors(tile.grid_x, tile.grid_y)
+	var has_infested_neighbor := false
+	for neighbor in neighbors:
+		if neighbor.is_infested:
+			has_infested_neighbor = true
+			break
+	
+	if not has_infested_neighbor:
+		print("pas de voisin infesté")
+		return
+	
+	var cout: int = tile.get_cout()
+	if GameManager.graines < cout:
+		print("pas assez de graines, cout : ", cout)
+		return
+	
+	GameManager.graines -= cout
+	tile.is_infested = true
+	tile.set_type(tile.TileType.WATER)
+
+# ── Game over ─────────────────────────────────────────────────
+
 func game_over() -> void:
-	# Exemple : attendre 1s puis retourner au menu
 	await get_tree().create_timer(1.0).timeout
 	GameManager.go_to_menu()
+
+func _on_btn_next_turn_pressed() -> void:
+	print("bouton next turn pressé !")
+	GameManager.next_turn()
+	print("Tour : ", GameManager.current_turn)
+	
+
+func _on_turn_changed(_turn: int) -> void:
+	_process_turn()
+	GameManager.avancement_enemy += 2.0
+	
+func _process_turn() -> void:
+	for x in map.MAP_WIDTH:
+		for y in map.MAP_HEIGHT:
+			var tile = map.get_tile(x, y)
+			if tile.is_infested:
+				GameManager.graines += tile.rendement
+	_process_enemy_attack()
+	
+func _on_graines_changed(value: int) -> void:
+	$HUD/TopBar/HBoxContainer/Graines/Label.text = "Graines : " +  str(value)
+
+func _on_avancement_changed(value: float) -> void:
+	$HUD/TopBar/HBoxContainer/HBoxContainer2/Label.text = "Ennemi : %.0f%%" % value
+
+func _reset_game() -> void:
+	# Calcule le bonus de graines
+	var bonus: int = int(floor(GameManager.graines / 10.0))
+	
+	# Remet toutes les tuiles à leur état de base
+	for x in map.MAP_WIDTH:
+		for y in map.MAP_HEIGHT:
+			var tile = map.get_tile(x, y)
+			if tile.is_infested:
+				tile.is_infested = false
+				tile.set_type(tile.TileType.PLAIN)
+	
+	# Remet la case (0,0) infestée
+	var start_tile = map.get_tile(0, 0)
+	start_tile.is_infested = true
+	start_tile.set_type(start_tile.TileType.WATER)
+	
+	# Réinitialise les variables globales
+	GameManager.avancement_enemy = 0.0
+	GameManager.graines = bonus
+	GameManager.current_turn = 1
+	GameManager.turn_changed.emit(1)
+
+
+func _on_btn_resets_pressed() -> void:
+	_reset_game()
+
+func _process_enemy_attack() -> void:
+	var avancement: float = GameManager.avancement_enemy
+	
+	# Rien en dessous de 20%
+	if avancement <= 20.0:
+		return
+	
+	# Calcule le % de chance : chaque tranche de 10% au dessus de 20% = 10% de chance
+	# 20-30% → 10%, 30-40% → 20%, 40-50% → 30%...
+	var tranches: int = int((avancement - 20.0) / 10.0)
+	var chance: float = tranches * 10.0
+	
+	# Lance le dé
+	if randf() * 100.0 > chance:
+		return
+	
+	# Trouve toutes les tuiles infestées
+	var infested_tiles := []
+	for x in map.MAP_WIDTH:
+		for y in map.MAP_HEIGHT:
+			var tile = map.get_tile(x, y)
+			if tile.is_infested:
+				infested_tiles.append(tile)
+	
+	if infested_tiles.is_empty():
+		return
+	
+	# Choisit une tuile aléatoire et la désinfeste
+	var target = infested_tiles[randi() % infested_tiles.size()]
+	target.is_infested = false
+	target.set_type(target.TileType.PLAIN)
+	print("Tuile désinfestée par l'ennemi : ", target.grid_x, ",", target.grid_y)

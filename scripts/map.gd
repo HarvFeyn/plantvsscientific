@@ -1,13 +1,9 @@
 extends Node2D
 
 # ── Configuration ─────────────────────────────────────────────
-const TILE_SIZE  := 160
+const TILE_SIZE  := 192
 const MAP_WIDTH  := 40
 const MAP_HEIGHT := 40
-
-const CAM_SPEED    := 600.0
-const CAM_ZOOM_MIN := 0.3
-const CAM_ZOOM_MAX := 2.0
 
 # ── Scène de tuile ────────────────────────────────────────────
 @export var tile_scene: PackedScene
@@ -19,61 +15,56 @@ var grid: Array = []
 var selected_tile = null
 var hovered_tile  = null
 
-# ── Références ────────────────────────────────────────────────
-@onready var cam: Camera2D = $Camera2D
+# ── Nodes créés par code ──────────────────────────────────────
+var grid_container: Node2D
+var tooltip:        PanelContainer
+var tooltip_label:  Label
 
 # ── Signal ────────────────────────────────────────────────────
 signal tile_selected(tile)
 
 
 func _ready() -> void:
+	# GridContainer
+	grid_container = Node2D.new()
+	grid_container.name = "GridContainer"
+	add_child(grid_container)
+
+	# Tooltip
+	var tooltip_layer := CanvasLayer.new()
+	tooltip_layer.layer = 5
+	add_child(tooltip_layer)
+
+	tooltip = PanelContainer.new()
+	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tooltip_layer.add_child(tooltip)
+
+	var vbox := VBoxContainer.new()
+	tooltip.add_child(vbox)
+
+	tooltip_label = Label.new()
+	tooltip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(tooltip_label)
+
+	tooltip.hide()
 	_generate_grid()
-	_setup_camera()
 
 
-func _process(delta: float) -> void:
-	_handle_camera(delta)
+func _process(_delta: float) -> void:
 	_handle_hover()
 
 
-# ── Caméra ────────────────────────────────────────────────────
-
-func _setup_camera() -> void:
-	cam.limit_left   = 0
-	cam.limit_top    = 0
-	cam.limit_right  = MAP_WIDTH  * TILE_SIZE
-	cam.limit_bottom = MAP_HEIGHT * TILE_SIZE
-	# Centre la caméra au milieu de la carte au départ
-	cam.position = Vector2(MAP_WIDTH * TILE_SIZE / 2.0, MAP_HEIGHT * TILE_SIZE / 2.0)
-
-
-func _handle_camera(delta: float) -> void:
-	var dir := Vector2(
-		Input.get_axis("move_left", "move_right"),
-		Input.get_axis("move_up",   "move_down")
-	)
-	cam.position += dir * CAM_SPEED / cam.zoom.x * delta
-
-func _input(event: InputEvent) -> void:
-	# Zoom molette
+func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			_zoom(0.1)
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			_zoom(-0.1)
-		# Clic gauche
-		elif event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		print("clic reçu dans map.gd")
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			_handle_click()
 
-
-func _zoom(delta: float) -> void:
-	var new_zoom: float = clamp(cam.zoom.x + delta, CAM_ZOOM_MIN, CAM_ZOOM_MAX)
-	var tween: Tween = create_tween()
-	tween.tween_property(cam, "zoom", Vector2(new_zoom, new_zoom), 0.1)
 
 # ── Clic ──────────────────────────────────────────────────────
 
 func _handle_click() -> void:
+	print("handle click")
 	var pos := get_global_mouse_position()
 	var x := int(pos.x / TILE_SIZE)
 	var y := int(pos.y / TILE_SIZE)
@@ -81,8 +72,8 @@ func _handle_click() -> void:
 	if tile:
 		_on_tile_clicked(tile)
 
-
 func _on_tile_clicked(tile) -> void:
+	print("tile clicked dans map")
 	if selected_tile != null:
 		selected_tile.deselect()
 	if selected_tile == tile:
@@ -102,15 +93,44 @@ func _handle_hover() -> void:
 	var tile = get_tile(x, y)
 
 	if tile == hovered_tile:
+		_update_tooltip_position()
 		return
 
 	if hovered_tile != null and not hovered_tile.is_selected:
 		hovered_tile.highlight.hide()
 
 	hovered_tile = tile
+
 	if hovered_tile != null and not hovered_tile.is_selected:
 		hovered_tile.highlight.color = Color(1, 1, 1, 0.15)
 		hovered_tile.highlight.show()
+		_show_tooltip(hovered_tile)
+	else:
+		tooltip.hide()
+
+
+func _show_tooltip(tile) -> void:
+	var text := "Case (%d, %d)\nType : %s" % [tile.grid_x, tile.grid_y, _type_name(tile.type)]
+	if not tile.is_infested:
+		text += "\nCoût : %d graines" % tile.get_cout()
+	tooltip_label.text = text
+	_update_tooltip_position()
+	tooltip.show()
+
+
+func _update_tooltip_position() -> void:
+	var mouse_pos := get_viewport().get_mouse_position()
+	tooltip.position = mouse_pos + Vector2(16, 16)
+
+
+func _type_name(type: int) -> String:
+	match type:
+		0: return "Plaine"
+		1: return "Forêt"
+		2: return "Montagne"
+		3: return "Eau"
+		4: return "Vide"
+		_: return "Inconnu"
 
 
 # ── Génération ────────────────────────────────────────────────
@@ -127,18 +147,18 @@ func _generate_grid() -> void:
 			tile.grid_x   = x
 			tile.grid_y   = y
 			tile.position = Vector2(x * TILE_SIZE, y * TILE_SIZE)
-			$GridContainer.add_child(tile)
+			grid_container.add_child(tile)
 			grid[x][y] = tile
-			tile.set_type(_random_type())
+			tile.set_type(_random_type(x,y))
 
 
-func _random_type() -> int:
+func _random_type(x:int,y:int) -> int:
 	var r := randf()
-	if   r < 0.50: return 0  # PLAIN
-	elif r < 0.70: return 1  # FOREST
-	elif r < 0.82: return 2  # MOUNTAIN
-	elif r < 0.90: return 3  # WATER
-	else:          return 4  # EMPTY
+	if x==0 and y==0: return 3
+	if   r < 0.50: return 0
+	elif r < 0.70: return 1
+	elif r < 0.82: return 2
+	else:          return 4
 
 
 # ── API publique ──────────────────────────────────────────────
@@ -157,8 +177,5 @@ func get_neighbors(x: int, y: int) -> Array:
 	return neighbors
 
 
-func focus_tile(x: int, y: int) -> void:
-	var target := Vector2(x * TILE_SIZE + TILE_SIZE / 2.0, y * TILE_SIZE + TILE_SIZE / 2.0)
-	var tween := create_tween()
-	tween.tween_property(cam, "position", target, 0.3)\
-		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+func get_map_size() -> Vector2:
+	return Vector2(MAP_WIDTH * TILE_SIZE, MAP_HEIGHT * TILE_SIZE)

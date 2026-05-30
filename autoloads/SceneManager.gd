@@ -12,15 +12,16 @@ var _is_transitioning := false
 func _ready() -> void:
 	await get_tree().process_frame  # attend que le viewport soit prêt
 
-	_transition = CanvasLayer.new()
-	_transition.layer = 100
-	get_tree().root.add_child(_transition)
-
-	_color_rect = ColorRect.new()
-	_color_rect.color = Color.BLACK
-	_color_rect.size = get_viewport().get_visible_rect().size
-	_color_rect.modulate.a = 0.0
-	_transition.add_child(_color_rect)
+	#_transition = CanvasLayer.new()
+	#_transition.layer = 100
+	#get_tree().root.add_child(_transition)
+#
+	#_color_rect = ColorRect.new()
+	#_color_rect.color = Color.BLACK
+	#_color_rect.size = get_viewport().get_visible_rect().size
+	#_color_rect.modulate.a = 0.0
+	#_color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	#_transition.add_child(_color_rect)
 
 
 func go_to(path: String) -> void:
@@ -33,9 +34,9 @@ func go_to(path: String) -> void:
 	_is_transitioning = true
 	_color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE  # ignore les clics pendant la transition
 	
-	await _fade_in()
+	#await _fade_in()
 	get_tree().change_scene_to_file(path)
-	await _fade_out()
+	#await _fade_out()
 	
 	_is_transitioning = false
 	scene_changed.emit(path)

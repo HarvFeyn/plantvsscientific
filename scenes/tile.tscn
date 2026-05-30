@@ -4,12 +4,15 @@
 
 [node name="tile" type="Node2D" unique_id=1264344581]
 script = ExtResource("1_3dk36")
+grid_x = null
+grid_y = null
 
 [node name="Sprite2D" type="ColorRect" parent="." unique_id=803208586]
-custom_minimum_size = Vector2(160, 160)
+custom_minimum_size = Vector2(192, 192)
+mouse_filter = 2
 
 [node name="Highlight" type="ColorRect" parent="." unique_id=51563592]
-offset_right = 160.0
-offset_bottom = 160.0
+offset_right = 192.0
+offset_bottom = 192.0
 mouse_filter = 2
 color = Color(1, 1, 1, 0.18431373)

@@ -1,22 +1,28 @@
 [gd_scene format=3 uid="uid://b8n3wuqkjbyri"]
 
 [ext_resource type="Script" uid="uid://bwpyh8uvfkxmp" path="res://scripts/game.gd" id="1_uwrxv"]
+[ext_resource type="Script" uid="uid://d5f4yo24k2p5" path="res://scripts/map.gd" id="2_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://cyoq0bv6qtrke" path="res://scenes/tile.tscn" id="3_lbhrr"]
 
 [node name="game" type="Node2D" unique_id=133573637]
 script = ExtResource("1_uwrxv")
 
-[node name="HUD" type="Node2D" parent="." unique_id=1781228328]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1081735239]
+layer = 2
 
 [node name="TopBar" type="Panel" parent="HUD" unique_id=1793633193]
 custom_minimum_size = Vector2(0, 48)
 anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
+size_flags_horizontal = 4
+mouse_filter = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HUD/TopBar" unique_id=1919288888]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
 theme_override_constants/separation = 32
 
 [node name="Graines" type="HBoxContainer" parent="HUD/TopBar/HBoxContainer" unique_id=1536545844]
@@ -25,7 +31,7 @@ size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="HUD/TopBar/HBoxContainer/Graines" unique_id=1359918531]
 layout_mode = 2
-text = "Nombre de graines : 10"
+text = "Graines : 0"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="HUD/TopBar/HBoxContainer" unique_id=1096993703]
 layout_mode = 2
@@ -33,17 +39,42 @@ size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="HUD/TopBar/HBoxContainer/HBoxContainer2" unique_id=1890856107]
 layout_mode = 2
-text = "Avancement des humains : 10%"
+text = "Ennemi : 0%"
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="HUD/TopBar/HBoxContainer" unique_id=757735851]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="HUD/TopBar/HBoxContainer/HBoxContainer3" unique_id=591102]
-layout_mode = 2
-text = "Tour : 5"
-
 [node name="HBoxContainer4" type="HBoxContainer" parent="HUD/TopBar/HBoxContainer" unique_id=1421146453]
 layout_mode = 2
 
+[node name="Buttons" type="HBoxContainer" parent="HUD/TopBar" unique_id=308136984]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -170.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="BtnNextTurn" type="Button" parent="HUD/TopBar/Buttons" unique_id=382854392]
+layout_mode = 2
+text = "Valider le tour"
+
+[node name="BtnResets" type="Button" parent="HUD/TopBar/Buttons" unique_id=658197318]
+layout_mode = 2
+text = "Reset"
+
 [node name="Map" type="Node2D" parent="." unique_id=1434601639]
+script = ExtResource("2_lnu2h")
+tile_scene = ExtResource("3_lbhrr")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=2008711142]
+
+[connection signal="pressed" from="HUD/TopBar/Buttons/BtnNextTurn" to="." method="_on_btn_next_turn_pressed"]
+[connection signal="pressed" from="HUD/TopBar/Buttons/BtnResets" to="." method="_on_btn_resets_pressed"]
