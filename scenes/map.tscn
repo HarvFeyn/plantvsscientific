@@ -13,6 +13,10 @@ tile_scene = ExtResource("2_paxxb")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=693239158]
 
+[node name="RectangleShape2D" type="CollisionShape2D" parent="TileMapLayer" unique_id=491746093]
+position = Vector2(80, 80)
+shape = SubResource("RectangleShape2D_paxxb")
+
 [node name="prout" type="CanvasLayer" parent="." unique_id=288530404]
 layer = 5
 
@@ -31,9 +35,12 @@ size_flags_vertical = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="prout/Tooltip" unique_id=1419169554]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
 [node name="TooltipLabel" type="Label" parent="prout/Tooltip/VBoxContainer" unique_id=1641322949]
 layout_mode = 2
+size_flags_horizontal = 4
 
 [node name="RectangleShape2D" type="CollisionShape2D" parent="prout" unique_id=1314616648]
 position = Vector2(80, 80)

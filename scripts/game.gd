@@ -9,12 +9,19 @@ const CAM_SPEED    := 600.0
 @onready var btn_next_turn: Button = $HUD/TopBar/Buttons/BtnNextTurn
 @onready var btn_reset:     Button = $HUD/TopBar/Buttons/BtnResets
 const COUT_INFESTION: int = 10
+@onready var graines_label: Label = $HUD/GrainesDisplay/Label
+@onready var terre_type_label: Label = $HUD/DisplayInfoTuile/TerreType
+@onready var circle_water_2: TextureRect = $HUD/DisplayInfoTuile/CircleWater2
+@onready var circle_water_3: TextureRect = $HUD/DisplayInfoTuile/CircleWater3
+@onready var circle_colza_2: TextureRect = $HUD/DisplayInfoTuile/CircleColza2
+@onready var circle_colza_3: TextureRect = $HUD/DisplayInfoTuile/CircleColza3
 
 func _ready() -> void:
 	GameManager.set_pause(false)
 	cam.make_current()
 	_setup_camera()
 	map.connect("tile_selected", _on_tile_selected)
+	map.connect("tile_hovered", _on_tile_hovered)
 	
 	GameManager.turn_changed.connect(_on_turn_changed)
 	GameManager.graines_changed.connect(_on_graines_changed)
@@ -32,10 +39,10 @@ func _unhandled_input(event: InputEvent) -> void:
 func _setup_camera() -> void:
 	var map_size: Vector2 = map.get_map_size()
 	cam.limit_left   = 0
-	cam.limit_top    = -100  # permet à la caméra de voir sous la TopBar
+	cam.limit_top    = -48
 	cam.limit_right  = int(map_size.x)
-	cam.limit_bottom = int(map_size.y)
-	cam.position     = Vector2(0, 100)  # démarre sous la TopBar
+	cam.limit_bottom = int(map_size.y) - 48
+	cam.position     = Vector2(0, 48)
 	cam.offset       = Vector2.ZERO
 
 func _handle_camera(delta: float) -> void:
@@ -93,11 +100,12 @@ func _process_turn() -> void:
 		for y in map.MAP_HEIGHT:
 			var tile = map.get_tile(x, y)
 			if tile.is_infested:
-				GameManager.graines += tile.rendement
+				GameManager.graines += tile.rendement + randi() % 3
 	_process_enemy_attack()
 	
 func _on_graines_changed(value: int) -> void:
-	$HUD/TopBar/HBoxContainer/Graines/Label.text = "Graines : " +  str(value)
+	print("tototo")
+	graines_label.text = str(value)
 
 func _on_avancement_changed(value: float) -> void:
 	$HUD/TopBar/HBoxContainer/HBoxContainer2/Label.text = "Ennemi : %.0f%%" % value
@@ -158,3 +166,32 @@ func _process_enemy_attack() -> void:
 	var target = infested_tiles[randi() % infested_tiles.size()]
 	target.disinfest()
 	print("Tuile désinfestée par l'ennemi : ", target.grid_x, ",", target.grid_y)
+
+func _on_tile_hovered(tile) -> void:
+	if tile == null:
+		terre_type_label.text = ""
+		return
+	match tile.terre:
+		0: terre_type_label.text = "Limon"
+		1: terre_type_label.text = "Argile"
+		2: terre_type_label.text = "Terre de Groie"
+	match tile.eau:
+		0: 
+			circle_water_2.texture = preload("uid://cr18115lapy3f")
+			circle_water_3.texture = preload("uid://cr18115lapy3f")
+		1:
+			circle_water_2.texture = preload("uid://cfo8fr7i7p76t")
+			circle_water_3.texture = preload("uid://cr18115lapy3f")
+		2: 
+			circle_water_2.texture = preload("uid://cfo8fr7i7p76t")
+			circle_water_3.texture = preload("uid://cfo8fr7i7p76t")
+	match tile.colzas:
+		0: 
+			circle_colza_2.texture = preload("uid://cr18115lapy3f")
+			circle_colza_3.texture = preload("uid://cr18115lapy3f")
+		1: 
+			circle_colza_2.texture = preload("uid://cen4ss4gsehbq")
+			circle_colza_3.texture = preload("uid://cr18115lapy3f")
+		2: 
+			circle_colza_2.texture = preload("uid://cen4ss4gsehbq")
+			circle_colza_3.texture = preload("uid://cen4ss4gsehbq")

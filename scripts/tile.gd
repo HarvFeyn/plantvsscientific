@@ -7,10 +7,9 @@ signal tile_clicked(tile)
 @export var grid_x: int = 0
 @export var grid_y: int = 0
  
-var is_selected: bool = false
 var building = null
 var is_infested: bool = false
-var rendement: int = 1
+var rendement: int = 5
 
 # ── Références ────────────────────────────────────────────────
 @onready var sprite: Sprite2D = $Sprite2D
@@ -38,9 +37,8 @@ const COLZA_SPRITES := [
 @onready var water_sprite: Sprite2D = $WaterSprite
 
 const WATER_SPRITES := [
-	preload("res://assets/sprites/colza0.png"),
 	preload("res://assets/sprites/water1.png"),
-	preload("res://assets/sprites/colza2.png")
+	preload("res://assets/sprites/water2.png")
 ]
 
 enum TerreType { LIMON, ARGILE, TERRE_DE_GROIE }
@@ -52,31 +50,38 @@ var terre: TerreType = TerreType.ARGILE
 
 func _ready() -> void:
 	highlight.hide()
-	sprite.texture = TERRE_SPRITES[randi() % TERRE_SPRITES.size()]
+
+	# Terre — basé sur la variable terre
+	sprite.texture = TERRE_SPRITES[terre]
 	sprite.centered = false
-	sprite.scale = Vector2(3, 3)
-	
+	sprite.scale = Vector2(2, 2)
+
+	# Infestation
 	infestation.texture = INFESTATION_SPRITE
 	infestation.centered = false
-	infestation.scale = Vector2(3, 3)
-	infestation.position = Vector2(-70, -80)
+	infestation.scale = Vector2(2, 2)
+	infestation.position = Vector2(-45, -50)
 	infestation.hide()
-	colza_sprite.texture = COLZA_SPRITES[randi() % COLZA_SPRITES.size()]
+
+	# Colza — basé sur la variable colzas
+	colza_sprite.texture = COLZA_SPRITES[colzas]
 	colza_sprite.centered = false
-	colza_sprite.scale = Vector2(3, 3)
-	water_sprite.texture = WATER_SPRITES[randi() % WATER_SPRITES.size()]
-	water_sprite.centered = false
-	water_sprite.position = Vector2(-0, 0)
-	water_sprite.scale = Vector2(3, 3)
+	colza_sprite.scale = Vector2(2, 2)
+
+	# Eau — 0 = pas d'eau, 1 ou 2 = sprite eau
+	if eau > 0:
+		water_sprite.texture = WATER_SPRITES[eau - 1]  # eau 1→index 0, eau 2→index 1
+		water_sprite.centered = false
+		water_sprite.scale = Vector2(2, 2)
+	else:
+		water_sprite.hide()
 	
 # ── Sélection ────────────────────────────────────────────────
  
 func select() -> void:
-	is_selected = true
 	highlight.show()
  
 func deselect() -> void:
-	is_selected = false
 	highlight.hide()
  
 func infest() -> void:
@@ -96,3 +101,11 @@ func get_cout() -> int:
 		return 0
 	var distance: int = abs(grid_x) + abs(grid_y)
 	return COUT_BASE + distance * COUT_PAR_PAS
+
+func calculate_rendement() -> void:
+	var multi_terre = 1
+	match terre:
+		TerreType.ARGILE: multi_terre = 1
+		TerreType.LIMON: multi_terre = 0.5
+		TerreType.TERRE_DE_GROIE: multi_terre = 1.5
+	rendement = ceil((colzas - eau + 3) * multi_terre)

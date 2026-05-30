@@ -27,7 +27,7 @@ AudioManager="*uid://np14knf0vqfe"
 
 [display]
 
-window/size/viewport_height=860
+window/size/viewport_height=780
 
 [dotnet]
 

@@ -14,7 +14,7 @@ script = ExtResource("1_3dk36")
 [node name="ColzaSprite" type="Sprite2D" parent="." unique_id=1128720460]
 
 [node name="Highlight" type="ColorRect" parent="." unique_id=51563592]
-offset_right = 192.0
-offset_bottom = 192.0
+offset_right = 128.0
+offset_bottom = 128.0
 mouse_filter = 2
-color = Color(1, 1, 1, 0.18431373)
+color = Color(1, 1, 1, 0.43529412)

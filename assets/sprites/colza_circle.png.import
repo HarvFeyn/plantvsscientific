@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1tp5rxa47a67"
-path="res://.godot/imported/argile.png-1a407539a504129dd5f615421fb29fc1.ctex"
+uid="uid://cen4ss4gsehbq"
+path="res://.godot/imported/colza_circle.png-a8225fd4b549ff146c6a8df3db9209c4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/argile.png"
-dest_files=["res://.godot/imported/argile.png-1a407539a504129dd5f615421fb29fc1.ctex"]
+source_file="res://assets/sprites/colza_circle.png"
+dest_files=["res://.godot/imported/colza_circle.png-a8225fd4b549ff146c6a8df3db9209c4.ctex"]
 
 [params]
 

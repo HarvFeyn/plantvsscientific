@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1tp5rxa47a67"
-path="res://.godot/imported/argile.png-1a407539a504129dd5f615421fb29fc1.ctex"
+uid="uid://brejprjsfo5oa"
+path="res://.godot/imported/water2.png-05bd4993c975f16abe3def28d0e83833.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/argile.png"
-dest_files=["res://.godot/imported/argile.png-1a407539a504129dd5f615421fb29fc1.ctex"]
+source_file="res://assets/sprites/water2.png"
+dest_files=["res://.godot/imported/water2.png-05bd4993c975f16abe3def28d0e83833.ctex"]
 
 [params]
 

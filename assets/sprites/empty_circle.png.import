@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1tp5rxa47a67"
-path="res://.godot/imported/argile.png-1a407539a504129dd5f615421fb29fc1.ctex"
+uid="uid://cr18115lapy3f"
+path="res://.godot/imported/empty_circle.png-adcb5bd56d15ed90ece8c2365544e096.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/argile.png"
-dest_files=["res://.godot/imported/argile.png-1a407539a504129dd5f615421fb29fc1.ctex"]
+source_file="res://assets/sprites/empty_circle.png"
+dest_files=["res://.godot/imported/empty_circle.png-adcb5bd56d15ed90ece8c2365544e096.ctex"]
 
 [params]
 
