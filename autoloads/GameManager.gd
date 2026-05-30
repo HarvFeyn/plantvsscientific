@@ -15,7 +15,7 @@ signal turn_changed(turn_number: int)
 var current_turn: int = 1
 
 signal graines_changed(value: int)
-var graines: int = 0 : set = _set_graines
+var graines: int = 50 : set = _set_graines
 
 signal avancement_changed(value: float)
 

@@ -6,8 +6,6 @@ const CAM_SPEED    := 600.0
 # ── Références ────────────────────────────────────────────────
 @onready var cam: Camera2D = $Camera2D
 @onready var map: Node2D   = $Map
-@onready var btn_next_turn: Button = $HUD/TopBar/Buttons/BtnNextTurn
-@onready var btn_reset:     Button = $HUD/TopBar/Buttons/BtnResets
 const COUT_INFESTION: int = 10
 @onready var graines_label: Label = $HUD/GrainesDisplay/Label
 @onready var terre_type_label: Label = $HUD/DisplayInfoTuile/TerreType
@@ -15,6 +13,9 @@ const COUT_INFESTION: int = 10
 @onready var circle_water_3: TextureRect = $HUD/DisplayInfoTuile/CircleWater3
 @onready var circle_colza_2: TextureRect = $HUD/DisplayInfoTuile/CircleColza2
 @onready var circle_colza_3: TextureRect = $HUD/DisplayInfoTuile/CircleColza3
+
+const TURN_BTN_NORMAL := preload("uid://xldyiccvygfc")
+const TURN_BTN_HOVER  := preload("uid://nq6syptfxea3")
 
 func _ready() -> void:
 	GameManager.set_pause(false)
@@ -26,11 +27,19 @@ func _ready() -> void:
 	GameManager.turn_changed.connect(_on_turn_changed)
 	GameManager.graines_changed.connect(_on_graines_changed)
 	GameManager.avancement_changed.connect(_on_avancement_changed)
+	#turn_button.mouse_entered.connect(_on_turn_button_entered)
+	#turn_button.mouse_exited.connect(_on_turn_button_exited)
 	
 func _process(delta: float) -> void:
 	_handle_camera(delta)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		var mouse_pos := get_viewport().get_mouse_position()
+		#var btn_rect := turn_button.get_global_rect()
+		#if btn_rect.has_point(mouse_pos):
+			#GameManager.next_turn()
+			#get_viewport().set_input_as_handled()
 	if event.is_action_pressed("ui_cancel"):
 		GameManager.go_to_menu()
 
@@ -39,10 +48,10 @@ func _unhandled_input(event: InputEvent) -> void:
 func _setup_camera() -> void:
 	var map_size: Vector2 = map.get_map_size()
 	cam.limit_left   = 0
-	cam.limit_top    = -48
+	cam.limit_top    = 0
 	cam.limit_right  = int(map_size.x)
-	cam.limit_bottom = int(map_size.y) - 48
-	cam.position     = Vector2(0, 48)
+	cam.limit_bottom = int(map_size.y)
+	cam.position     = Vector2(0, 0)
 	cam.offset       = Vector2.ZERO
 
 func _handle_camera(delta: float) -> void:
@@ -84,11 +93,6 @@ func _on_tile_selected(tile) -> void:
 func game_over() -> void:
 	await get_tree().create_timer(1.0).timeout
 	GameManager.go_to_menu()
-
-func _on_btn_next_turn_pressed() -> void:
-	print("bouton next turn pressé !")
-	GameManager.next_turn()
-	print("Tour : ", GameManager.current_turn)
 	
 
 func _on_turn_changed(_turn: int) -> void:
@@ -104,7 +108,6 @@ func _process_turn() -> void:
 	_process_enemy_attack()
 	
 func _on_graines_changed(value: int) -> void:
-	print("tototo")
 	graines_label.text = str(value)
 
 func _on_avancement_changed(value: float) -> void:
@@ -112,7 +115,7 @@ func _on_avancement_changed(value: float) -> void:
 
 func _reset_game() -> void:
 	# Calcule le bonus de graines
-	var bonus: int = int(floor(GameManager.graines / 10.0))
+	var bonus: int = int(floor(GameManager.graines / 3))
 	
 	# Remet toutes les tuiles à leur état de base
 	for x in map.MAP_WIDTH:
@@ -122,7 +125,7 @@ func _reset_game() -> void:
 				tile.is_infested = false
 				tile.disinfest()
 	# Remet la case (0,0) infestée
-	var start_tile = map.get_tile(0, 0)
+	var start_tile = map.get_tile(map.START_X, map.START_Y)
 	start_tile.infest()
 	
 	# Réinitialise les variables globales
@@ -165,7 +168,6 @@ func _process_enemy_attack() -> void:
 	# Choisit une tuile aléatoire et la désinfeste
 	var target = infested_tiles[randi() % infested_tiles.size()]
 	target.disinfest()
-	print("Tuile désinfestée par l'ennemi : ", target.grid_x, ",", target.grid_y)
 
 func _on_tile_hovered(tile) -> void:
 	if tile == null:
@@ -195,3 +197,18 @@ func _on_tile_hovered(tile) -> void:
 		2: 
 			circle_colza_2.texture = preload("uid://cen4ss4gsehbq")
 			circle_colza_3.texture = preload("uid://cen4ss4gsehbq")
+			
+			
+#func _on_turn_button_entered() -> void:
+	#turn_button.texture = TURN_BTN_HOVER
+	#map.ui_hovered = true
+
+#func _on_turn_button_exited() -> void:
+	#turn_button.texture = TURN_BTN_NORMAL
+	#map.ui_hovered = false
+	#print("ui_hovered : ", map.ui_hovered)
+	
+#func _on_turn_button_input(event: InputEvent) -> void:
+	#if event is InputEventMouseButton:
+		#if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			#GameManager.next_turn()

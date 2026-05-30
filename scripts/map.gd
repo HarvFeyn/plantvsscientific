@@ -29,6 +29,10 @@ signal tile_hovered(tile)
 const ICON_GRAINE  := preload("res://assets/sprites/graine_cout.png")
 const ICON_FLECHE  := preload("res://assets/sprites/fleche_rendement.png")
 
+const START_X := 4
+const START_Y := 2
+var ui_hovered: bool = false
+
 func _ready() -> void:
 	# ── GridContainer ─────────────────────────────────────────
 	grid_container = Node2D.new()
@@ -101,7 +105,7 @@ func _process(_delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		print("clic reçu dans map.gd")
+		print("clic dans map unhandled")
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			_handle_click()
 
@@ -109,8 +113,11 @@ func _unhandled_input(event: InputEvent) -> void:
 # ── Clic ──────────────────────────────────────────────────────
 
 func _handle_click() -> void:
-	print("handle click")
+	print("ui_hovered : ", ui_hovered)
+	if ui_hovered:
+		return
 	var pos := get_global_mouse_position()
+	pos.y -= 48
 	var x := int(pos.x / TILE_SIZE)
 	var y := int(pos.y / TILE_SIZE)
 	var tile = get_tile(x, y)
@@ -121,10 +128,15 @@ func _on_tile_clicked(tile) -> void:
 	tile_selected.emit(tile)
 
 
-# ── Hover ─────────────────────────────────────────────────────
-
 func _handle_hover() -> void:
+	if ui_hovered:
+		if hovered_tile != null:
+			hovered_tile.highlight.hide()
+			hovered_tile = null
+		tooltip.hide()
+		return
 	var pos := get_global_mouse_position()
+	pos.y -= 48
 	var x := int(pos.x / TILE_SIZE)
 	var y := int(pos.y / TILE_SIZE)
 	var tile = get_tile(x, y)
@@ -139,7 +151,7 @@ func _handle_hover() -> void:
 	hovered_tile = tile
 
 	if hovered_tile != null:
-		hovered_tile.highlight.color = Color(1, 1, 1, 0.30)
+		hovered_tile.highlight.color = Color(0.80, 0, 0.80, 0.50)
 		hovered_tile.highlight.show()
 		tile_hovered.emit(hovered_tile)
 		_show_tooltip(hovered_tile)
@@ -190,7 +202,7 @@ func _generate_grid() -> void:
 			grid_container.add_child(tile)
 			grid[x][y] = tile
 			tile.calculate_rendement()
-	var start_tile = get_tile(0, 0)
+	var start_tile = get_tile(START_X, START_Y)
 	start_tile.infest()
 
 # ── API publique ──────────────────────────────────────────────

@@ -15,15 +15,17 @@ var rendement: int = 5
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var highlight: ColorRect = $Highlight
 @onready var infestation: Sprite2D = $Infestation
+@onready var cadre: Sprite2D = $Cadre
 
+const CADRE_SPRITE := preload("res://assets/sprites/cadre_all.png")
 const INFESTATION_SPRITE := preload("res://assets/sprites/orobanche.png")
-const COUT_BASE    := 5
-const COUT_PAR_PAS := 2
+const COUT_BASE    := 20
+const COUT_PAR_PAS := 10
 
 const TERRE_SPRITES := [
-	preload("res://assets/sprites/argile.png"),
 	preload("res://assets/sprites/limon.png"),
-	preload("res://assets/sprites/terre.png")
+	preload("res://assets/sprites/argile.png"),
+	preload("res://assets/sprites/terre.png"),
 ]
 
 @onready var colza_sprite: Sprite2D = $ColzaSprite
@@ -45,7 +47,7 @@ enum TerreType { LIMON, ARGILE, TERRE_DE_GROIE }
 
 var colzas: int = 1
 var eau: int = 1
-var terre: TerreType = TerreType.ARGILE
+var terre: TerreType
 
 
 func _ready() -> void:
@@ -67,7 +69,11 @@ func _ready() -> void:
 	colza_sprite.texture = COLZA_SPRITES[colzas]
 	colza_sprite.centered = false
 	colza_sprite.scale = Vector2(2, 2)
-
+	
+	cadre.texture = CADRE_SPRITE
+	cadre.centered = false
+	cadre.scale = Vector2(2, 2)
+	
 	# Eau — 0 = pas d'eau, 1 ou 2 = sprite eau
 	if eau > 0:
 		water_sprite.texture = WATER_SPRITES[eau - 1]  # eau 1→index 0, eau 2→index 1
@@ -92,20 +98,16 @@ func disinfest() -> void:
 	is_infested = false
 	infestation.hide()
 
-func _get_cout_infestion(tile) -> int:
-	var distance: int = abs(tile.grid_x) + abs(tile.grid_y)
-	return 5 + distance * 2
-
 func get_cout() -> int:
 	if is_infested:
 		return 0
-	var distance: int = abs(grid_x) + abs(grid_y)
+	var distance: int = abs(grid_x - 4) + abs(grid_y - 2)
 	return COUT_BASE + distance * COUT_PAR_PAS
-
+	
 func calculate_rendement() -> void:
 	var multi_terre = 1
 	match terre:
-		TerreType.ARGILE: multi_terre = 1
-		TerreType.LIMON: multi_terre = 0.5
-		TerreType.TERRE_DE_GROIE: multi_terre = 1.5
+		TerreType.ARGILE: multi_terre = 0.5
+		TerreType.LIMON: multi_terre = 0.25
+		TerreType.TERRE_DE_GROIE: multi_terre = 1
 	rendement = ceil((colzas - eau + 3) * multi_terre)

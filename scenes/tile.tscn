@@ -11,10 +11,12 @@ script = ExtResource("1_3dk36")
 
 [node name="Infestation" type="Sprite2D" parent="." unique_id=448898646]
 
+[node name="Cadre" type="Sprite2D" parent="." unique_id=643728815]
+
 [node name="ColzaSprite" type="Sprite2D" parent="." unique_id=1128720460]
 
 [node name="Highlight" type="ColorRect" parent="." unique_id=51563592]
 offset_right = 128.0
 offset_bottom = 128.0
 mouse_filter = 2
-color = Color(1, 1, 1, 0.43529412)
+color = Color(0.7985916, 0.0005080682, 0.80048305, 0.43529412)
