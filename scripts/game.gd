@@ -13,6 +13,7 @@ const COUT_INFESTION: int = 10
 @onready var circle_water_3: TextureRect = $HUD/DisplayInfoTuile/CircleWater3
 @onready var circle_colza_2: TextureRect = $HUD/DisplayInfoTuile/CircleColza2
 @onready var circle_colza_3: TextureRect = $HUD/DisplayInfoTuile/CircleColza3
+@onready var turn_button: TextureRect = $HUD/TurnButton
 
 const TURN_BTN_NORMAL := preload("uid://xldyiccvygfc")
 const TURN_BTN_HOVER  := preload("uid://nq6syptfxea3")
@@ -27,22 +28,21 @@ func _ready() -> void:
 	GameManager.turn_changed.connect(_on_turn_changed)
 	GameManager.graines_changed.connect(_on_graines_changed)
 	GameManager.avancement_changed.connect(_on_avancement_changed)
-	#turn_button.mouse_entered.connect(_on_turn_button_entered)
-	#turn_button.mouse_exited.connect(_on_turn_button_exited)
+	turn_button.mouse_entered.connect(_on_turn_button_entered)
+	turn_button.mouse_exited.connect(_on_turn_button_exited)
 	
 func _process(delta: float) -> void:
 	_handle_camera(delta)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		var mouse_pos := get_viewport().get_mouse_position()
-		#var btn_rect := turn_button.get_global_rect()
-		#if btn_rect.has_point(mouse_pos):
-			#GameManager.next_turn()
-			#get_viewport().set_input_as_handled()
 	if event.is_action_pressed("ui_cancel"):
 		GameManager.go_to_menu()
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if map.ui_hovered:
+			GameManager.next_turn()
+			
 # ── Caméra ────────────────────────────────────────────────────
 
 func _setup_camera() -> void:
@@ -65,6 +65,8 @@ func _handle_camera(delta: float) -> void:
 # ── Tuile sélectionnée ────────────────────────────────────────
 
 func _on_tile_selected(tile) -> void:
+	if tile == null:
+		return
 	if tile.is_infested:
 		return
 	
@@ -197,18 +199,17 @@ func _on_tile_hovered(tile) -> void:
 		2: 
 			circle_colza_2.texture = preload("uid://cen4ss4gsehbq")
 			circle_colza_3.texture = preload("uid://cen4ss4gsehbq")
-			
-			
-#func _on_turn_button_entered() -> void:
-	#turn_button.texture = TURN_BTN_HOVER
-	#map.ui_hovered = true
-
-#func _on_turn_button_exited() -> void:
-	#turn_button.texture = TURN_BTN_NORMAL
-	#map.ui_hovered = false
-	#print("ui_hovered : ", map.ui_hovered)
 	
-#func _on_turn_button_input(event: InputEvent) -> void:
-	#if event is InputEventMouseButton:
-		#if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			#GameManager.next_turn()
+func _on_turn_button_entered() -> void:
+	turn_button.texture = TURN_BTN_HOVER
+	map.ui_hovered = true
+
+func _on_turn_button_exited() -> void:
+	turn_button.texture = TURN_BTN_NORMAL
+	map.ui_hovered = false
+	print("ui_hovered : ", map.ui_hovered)
+	
+func _on_turn_button_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			GameManager.next_turn()

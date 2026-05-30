@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cfo8fr7i7p76t" path="res://assets/sprites/water_circle.png" id="5_u5sy4"]
 [ext_resource type="Texture2D" uid="uid://cr18115lapy3f" path="res://assets/sprites/empty_circle.png" id="6_0tnpc"]
 [ext_resource type="Texture2D" uid="uid://cen4ss4gsehbq" path="res://assets/sprites/colza_circle.png" id="6_gee14"]
+[ext_resource type="Texture2D" uid="uid://xldyiccvygfc" path="res://assets/sprites/button_turn.png" id="8_vtaks"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lnu2h"]
 size = Vector2(160, 160)
@@ -187,6 +188,13 @@ offset_top = 640.0
 offset_right = 215.0
 offset_bottom = 680.0
 texture = ExtResource("6_0tnpc")
+
+[node name="TurnButton" type="TextureRect" parent="HUD" unique_id=1063608715]
+offset_left = 912.0
+offset_top = 673.0
+offset_right = 1122.0
+offset_bottom = 743.0
+texture = ExtResource("8_vtaks")
 
 [node name="Map" type="Node2D" parent="." unique_id=1434601639]
 position = Vector2(0, 48)

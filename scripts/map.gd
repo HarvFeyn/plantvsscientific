@@ -103,12 +103,13 @@ func _process(_delta: float) -> void:
 	_handle_hover()
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		print("clic dans map unhandled")
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			_handle_click()
-
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if ui_hovered:
+			# le clic est sur le bouton UI
+			tile_selected.emit(null)  # signal vide pour ne rien faire
+			return
+		_handle_click()
 
 # ── Clic ──────────────────────────────────────────────────────
 
