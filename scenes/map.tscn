@@ -3,6 +3,9 @@
 [ext_resource type="Script" uid="uid://d5f4yo24k2p5" path="res://scripts/map.gd" id="1_4xfga"]
 [ext_resource type="PackedScene" uid="uid://cyoq0bv6qtrke" path="res://scenes/tile.tscn" id="2_paxxb"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_paxxb"]
+size = Vector2(160, 160)
+
 [node name="Map" type="Node2D" unique_id=961880429]
 position = Vector2(0, 48)
 script = ExtResource("1_4xfga")
@@ -31,3 +34,7 @@ layout_mode = 2
 
 [node name="TooltipLabel" type="Label" parent="prout/Tooltip/VBoxContainer" unique_id=1641322949]
 layout_mode = 2
+
+[node name="RectangleShape2D" type="CollisionShape2D" parent="prout" unique_id=1314616648]
+position = Vector2(80, 80)
+shape = SubResource("RectangleShape2D_paxxb")

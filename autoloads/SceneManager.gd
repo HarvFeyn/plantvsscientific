@@ -12,16 +12,16 @@ var _is_transitioning := false
 func _ready() -> void:
 	await get_tree().process_frame  # attend que le viewport soit prêt
 
-	#_transition = CanvasLayer.new()
-	#_transition.layer = 100
-	#get_tree().root.add_child(_transition)
-#
-	#_color_rect = ColorRect.new()
-	#_color_rect.color = Color.BLACK
-	#_color_rect.size = get_viewport().get_visible_rect().size
-	#_color_rect.modulate.a = 0.0
-	#_color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	#_transition.add_child(_color_rect)
+	_transition = CanvasLayer.new()
+	_transition.layer = 100
+	get_tree().root.add_child(_transition)
+
+	_color_rect = ColorRect.new()
+	_color_rect.color = Color.BLACK
+	_color_rect.size = get_viewport().get_visible_rect().size
+	_color_rect.modulate.a = 0.0
+	_color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_transition.add_child(_color_rect)
 
 
 func go_to(path: String) -> void:

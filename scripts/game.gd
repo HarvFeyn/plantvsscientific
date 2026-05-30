@@ -70,8 +70,7 @@ func _on_tile_selected(tile) -> void:
 		return
 	
 	GameManager.graines -= cout
-	tile.is_infested = true
-	tile.set_type(tile.TileType.WATER)
+	tile.infest()
 
 # ── Game over ─────────────────────────────────────────────────
 
@@ -113,12 +112,10 @@ func _reset_game() -> void:
 			var tile = map.get_tile(x, y)
 			if tile.is_infested:
 				tile.is_infested = false
-				tile.set_type(tile.TileType.PLAIN)
-	
+				tile.disinfest()
 	# Remet la case (0,0) infestée
 	var start_tile = map.get_tile(0, 0)
-	start_tile.is_infested = true
-	start_tile.set_type(start_tile.TileType.WATER)
+	start_tile.infest()
 	
 	# Réinitialise les variables globales
 	GameManager.avancement_enemy = 0.0
@@ -159,6 +156,5 @@ func _process_enemy_attack() -> void:
 	
 	# Choisit une tuile aléatoire et la désinfeste
 	var target = infested_tiles[randi() % infested_tiles.size()]
-	target.is_infested = false
-	target.set_type(target.TileType.PLAIN)
+	target.disinfest()
 	print("Tuile désinfestée par l'ennemi : ", target.grid_x, ",", target.grid_y)

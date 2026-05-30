@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bqasimcqj06g2"
-path="res://.godot/imported/Orc.png-a4a85b0851472c83592020d2720253c4.ctex"
+uid="uid://bmvp0un6sia4y"
+path="res://.godot/imported/terre.png-af4a9859c51dccbeeab8330471913782.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/Orc.png"
-dest_files=["res://.godot/imported/Orc.png-a4a85b0851472c83592020d2720253c4.ctex"]
+source_file="res://assets/sprites/terre.png"
+dest_files=["res://.godot/imported/terre.png-af4a9859c51dccbeeab8330471913782.ctex"]
 
 [params]
 

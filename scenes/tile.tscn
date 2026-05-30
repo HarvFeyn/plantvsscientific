@@ -4,12 +4,14 @@
 
 [node name="tile" type="Node2D" unique_id=1264344581]
 script = ExtResource("1_3dk36")
-grid_x = null
-grid_y = null
 
-[node name="Sprite2D" type="ColorRect" parent="." unique_id=803208586]
-custom_minimum_size = Vector2(192, 192)
-mouse_filter = 2
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1945436461]
+
+[node name="WaterSprite" type="Sprite2D" parent="." unique_id=1576899412]
+
+[node name="Infestation" type="Sprite2D" parent="." unique_id=448898646]
+
+[node name="ColzaSprite" type="Sprite2D" parent="." unique_id=1128720460]
 
 [node name="Highlight" type="ColorRect" parent="." unique_id=51563592]
 offset_right = 192.0

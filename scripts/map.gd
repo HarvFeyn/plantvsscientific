@@ -19,10 +19,14 @@ var hovered_tile  = null
 var grid_container: Node2D
 var tooltip:        PanelContainer
 var tooltip_label:  Label
+var tooltip_icon:  TextureRect
+var tooltip_action_label: Label
 
 # ── Signal ────────────────────────────────────────────────────
 signal tile_selected(tile)
 
+const ICON_GRAINE  := preload("res://assets/sprites/graine_cout.png")
+const ICON_FLECHE  := preload("res://assets/sprites/fleche_rendement.png")
 
 func _ready() -> void:
 	# GridContainer
@@ -40,15 +44,35 @@ func _ready() -> void:
 	tooltip_layer.add_child(tooltip)
 
 	var vbox := VBoxContainer.new()
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tooltip.add_child(vbox)
+
+	var hbox := HBoxContainer.new()
+	hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(hbox)
+
+	tooltip_icon = TextureRect.new()
+	tooltip_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	tooltip_icon.custom_minimum_size = Vector2(24, 24)
+	tooltip_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
 
 	tooltip_label = Label.new()
 	tooltip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vbox.add_child(tooltip_label)
+	hbox.add_child(tooltip_label)
+	hbox.add_child(tooltip_icon)
+	
+	var action_label := Label.new()
+	action_label.text = "Cliquer pour infester"
+	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	action_label.add_theme_font_size_override("font_size", 11)
+	vbox.add_child(action_label)
+	tooltip_action_label = action_label
 
 	tooltip.hide()
+	tooltip.hide()
 	_generate_grid()
-
+	
 
 func _process(_delta: float) -> void:
 	_handle_hover()
@@ -108,29 +132,21 @@ func _handle_hover() -> void:
 	else:
 		tooltip.hide()
 
-
 func _show_tooltip(tile) -> void:
-	var text := "Case (%d, %d)\nType : %s" % [tile.grid_x, tile.grid_y, _type_name(tile.type)]
-	if not tile.is_infested:
-		text += "\nCoût : %d graines" % tile.get_cout()
-	tooltip_label.text = text
+	if tile.is_infested:
+		tooltip_icon.texture = ICON_FLECHE
+		tooltip_label.text = str(tile.rendement)
+		tooltip_action_label.hide()
+	else:
+		tooltip_icon.texture = ICON_GRAINE
+		tooltip_label.text = str(tile.get_cout())
+		tooltip_action_label.show()
 	_update_tooltip_position()
 	tooltip.show()
-
 
 func _update_tooltip_position() -> void:
 	var mouse_pos := get_viewport().get_mouse_position()
 	tooltip.position = mouse_pos + Vector2(16, 16)
-
-
-func _type_name(type: int) -> String:
-	match type:
-		0: return "Plaine"
-		1: return "Forêt"
-		2: return "Montagne"
-		3: return "Eau"
-		4: return "Vide"
-		_: return "Inconnu"
 
 
 # ── Génération ────────────────────────────────────────────────
@@ -149,17 +165,8 @@ func _generate_grid() -> void:
 			tile.position = Vector2(x * TILE_SIZE, y * TILE_SIZE)
 			grid_container.add_child(tile)
 			grid[x][y] = tile
-			tile.set_type(_random_type(x,y))
-
-
-func _random_type(x:int,y:int) -> int:
-	var r := randf()
-	if x==0 and y==0: return 3
-	if   r < 0.50: return 0
-	elif r < 0.70: return 1
-	elif r < 0.82: return 2
-	else:          return 4
-
+	var start_tile = get_tile(0, 0)
+	start_tile.infest()
 
 # ── API publique ──────────────────────────────────────────────
 
