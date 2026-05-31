@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://cowplka5dtjhk"]
+
+[ext_resource type="Script" uid="uid://bnc575qqum21n" path="res://scripts/credit.gd" id="1_5egdn"]
+[ext_resource type="Texture2D" uid="uid://ddrh52o8yivpx" path="res://assets/sprites/credits.png" id="1_kmqx5"]
+
+[node name="Credit" type="Control" unique_id=776583989]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5egdn")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=785992835]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_kmqx5")

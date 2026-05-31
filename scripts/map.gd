@@ -194,7 +194,10 @@ func _generate_grid() -> void:
 	for x in MAP_WIDTH:
 		for y in MAP_HEIGHT:
 			var tile = tile_scene.instantiate()
-			tile.colzas = randi() % 3
+			if(x==START_X and y==START_Y):
+				tile.colzas = 2
+			else:
+				tile.colzas = randi() % 3
 			tile.eau    = randi() % 3
 			tile.terre  = randi() % 3
 			tile.grid_x   = x
@@ -204,6 +207,7 @@ func _generate_grid() -> void:
 			grid[x][y] = tile
 			tile.calculate_rendement()
 	var start_tile = get_tile(START_X, START_Y)
+	start_tile.calculate_rendement()
 	start_tile.infest()
 
 # ── API publique ──────────────────────────────────────────────

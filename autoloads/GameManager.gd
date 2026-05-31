@@ -8,6 +8,7 @@ signal game_paused(is_paused: bool)
 const SCENE_MENU := "res://scenes/menu.tscn"
 const SCENE_GAME := "res://scenes/game.tscn"
 const SCENE_INTRO := "uid://bye6bxvtvate2"
+const SCENE_CREDITS := "uid://cowplka5dtjhk"
 
 var is_paused: bool = false
 var high_score: int = 0
@@ -40,6 +41,9 @@ func start_intro() -> void:
 	
 func go_to_menu() -> void:
 	SceneManager.go_to(SCENE_MENU)
+
+func go_to_credits() -> void:
+	SceneManager.go_to(SCENE_CREDITS)
 
 
 # --- Pause ---

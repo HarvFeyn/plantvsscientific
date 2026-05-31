@@ -23,7 +23,7 @@ var is_blocked_temp: bool = false
 
 const CADRE_SPRITE := preload("res://assets/sprites/cadre_all.png")
 const INFESTATION_SPRITE := preload("res://assets/sprites/orobanche.png")
-const COUT_BASE    := 30
+const COUT_BASE    := 20
 const COUT_PAR_PAS := 60
 
 const TERRE_SPRITES := [
