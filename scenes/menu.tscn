@@ -1,21 +1,25 @@
 [gd_scene format=3 uid="uid://dr8srp5f0viay"]
 
 [ext_resource type="Script" uid="uid://doq5igeu1m58o" path="res://scripts/menu.gd" id="1_yqeox"]
+[ext_resource type="Texture2D" uid="uid://vihvwtp4c8y7" path="res://assets/sprites/game_title.png" id="2_vjb58"]
 
 [node name="Menu" type="Control" unique_id=411587808]
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_yqeox")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=416458755]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 0.7176471, 1)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=559936562]
 layout_mode = 1
@@ -32,21 +36,22 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 30
 
-[node name="Label" type="Label" parent="VBoxContainer" unique_id=1458290690]
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer" unique_id=1116971070]
 layout_mode = 2
-text = "Plantes VS Scientifiques"
+texture = ExtResource("2_vjb58")
 
 [node name="Play" type="Button" parent="VBoxContainer" unique_id=1348416557]
 layout_mode = 2
-text = "Play"
+text = "Jouer"
 
-[node name="Options" type="Button" parent="VBoxContainer" unique_id=1584489630]
+[node name="Credits" type="Button" parent="VBoxContainer" unique_id=1584489630]
 layout_mode = 2
-text = "Options"
+text = "Crédits
+"
 
 [node name="Quit" type="Button" parent="VBoxContainer" unique_id=1279568769]
 layout_mode = 2
-text = "Quit"
+text = "Quitter"
 
 [connection signal="pressed" from="VBoxContainer/Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="VBoxContainer/Quit" to="." method="_on_quit_pressed"]

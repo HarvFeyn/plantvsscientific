@@ -22,6 +22,10 @@ const COUT_INFESTION: int = 10
 @onready var popup_reset: Control = $HUD/PopupReset
 @onready var btn_confirm: Control = $HUD/PopupReset/BtnConfirm
 @onready var btn_cancel:  Control = $HUD/PopupReset/BtnCancel
+@onready var popup_reset_control: Control = $HUD/PopupReset
+@onready var btn_confirm_reset: Button = $HUD/PopupReset/BtnConfirm
+@onready var btn_cancel_reset:  Button = $HUD/PopupReset/BtnCancel
+@onready var overlay: ColorRect = $HUD/PopupReset/Overlay
 
 var hovered_button: String = ""
 
@@ -52,6 +56,22 @@ func _ready() -> void:
 	btn_confirm.mouse_exited.connect(func():  hovered_button = "")
 	btn_cancel.mouse_entered.connect(func():  hovered_button = "cancel")
 	btn_cancel.mouse_exited.connect(func():   hovered_button = "")
+	popup_reset_control.hide()
+	btn_confirm_reset.pressed.connect(_confirm_reset)
+	btn_cancel_reset.pressed.connect(_cancel_reset)
+	overlay.mouse_entered.connect(func(): map.ui_hovered = true)
+	overlay.mouse_exited.connect(func():  map.ui_hovered = false)
+	overlay.mouse_entered.connect(func(): map.ui_hovered = true)
+	btn_confirm.mouse_entered.connect(func(): 
+		map.ui_hovered = true
+		hovered_button = "confirm"
+	)
+	btn_cancel.mouse_entered.connect(func(): 
+		map.ui_hovered = true
+		hovered_button = "cancel"
+	)
+	btn_confirm.mouse_exited.connect(func(): hovered_button = "")
+	btn_cancel.mouse_exited.connect(func(): hovered_button = "")
 	
 func _process(delta: float) -> void:
 	_handle_camera(delta)
@@ -260,15 +280,16 @@ func _update_enemy_marker(value: float) -> void:
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 		
 func _open_popup_reset() -> void:
-	popup_reset.show()
-	map.ui_hovered = true  # bloque la map pendant la popup
+	popup_reset_control.show()
+	map.ui_hovered = true  # bloque dès l'ouverture
 
 func _confirm_reset() -> void:
-	popup_reset.hide()
-	map.ui_hovered = false
+	popup_reset_control.hide()
+	map.ui_hovered = false  # débloque à la fermeture
+	hovered_button = ""
 	_reset_game()
 
 func _cancel_reset() -> void:
-	popup_reset.hide()
-	map.ui_hovered = false
+	popup_reset_control.hide()
+	map.ui_hovered = false  # débloque à la fermeture
 	hovered_button = ""

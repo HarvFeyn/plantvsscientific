@@ -202,7 +202,7 @@ position = Vector2(50, 50)
 scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_ir15t")
 animation = &"hover"
-frame_progress = 0.24408656
+frame_progress = 0.43786758
 
 [node name="EnemyControl" type="Control" parent="HUD" unique_id=626475114]
 layout_mode = 3
@@ -250,50 +250,55 @@ grow_vertical = 2
 scale = Vector2(0.7, 0.7)
 texture = ExtResource("11_kvuet")
 
-[node name="PopupReset" type="TextureRect" parent="HUD" unique_id=1435591675]
+[node name="PopupReset" type="Control" parent="HUD" unique_id=1913288018]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+
+[node name="Overlay" type="ColorRect" parent="HUD/PopupReset" unique_id=1455400857]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.59607846)
+
+[node name="PopupReset" type="TextureRect" parent="HUD/PopupReset" unique_id=1435591675]
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -192.0
+offset_top = -128.0
+offset_right = 192.0
+offset_bottom = 128.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 0
 texture = ExtResource("12_trtic")
 
-[node name="PopupBg" type="TextureRect" parent="HUD/PopupReset" unique_id=201681787]
+[node name="BtnConfirm" type="Button" parent="HUD/PopupReset" unique_id=1550276865]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 600.0
+offset_top = 549.0
+offset_right = 663.0
+offset_bottom = 589.0
+text = "Hiberner"
 
-[node name="BtnConfirm" type="Control" parent="HUD/PopupReset" unique_id=47108487]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="TextureRect" type="Button" parent="HUD/PopupReset/BtnConfirm" unique_id=1550276865]
+[node name="BtnCancel" type="Button" parent="HUD/PopupReset" unique_id=1996258017]
 layout_mode = 0
-offset_left = 231.0
-offset_top = 277.0
-offset_right = 271.0
-offset_bottom = 317.0
-
-[node name="BtnCancel" type="Control" parent="HUD/PopupReset" unique_id=1399159451]
-anchors_preset = 0
-offset_left = 154.0
-offset_top = 18.0
-offset_right = 194.0
-offset_bottom = 58.0
-
-[node name="TextureRect" type="Button" parent="HUD/PopupReset/BtnCancel" unique_id=1996258017]
-layout_mode = 0
-offset_left = -43.0
-offset_top = 256.0
-offset_right = -3.0
-offset_bottom = 296.0
+offset_left = 481.0
+offset_top = 546.0
+offset_right = 551.0
+offset_bottom = 586.0
+text = "Annuler"
 
 [node name="Map" type="Node2D" parent="." unique_id=1434601639]
 position = Vector2(0, 48)
