@@ -1,21 +1,28 @@
 extends Control
 
-# Durée d'affichage avant de passer automatiquement au jeu
-const DISPLAY_TIME := 3.0
+const VIDEOS := [
+	preload("uid://bwf4xyvwur0nd"),
+	preload("uid://cs3ewd1v75duu"),
+	preload("uid://b02nvvm5g1d6i"),
+	preload("uid://c6vmeqfrcjj3n"),
+	preload("uid://cfxlwiwummdvt"),
+]
+
+var current_index: int = 0
+
+@onready var video_player: VideoStreamPlayer = $VideoPlayer
 
 func _ready() -> void:
-	pass
-	# Passe au jeu automatiquement après DISPLAY_TIME secondes
-	#await get_tree().create_timer(DISPLAY_TIME).timeout
-	#GameManager.start_game()
+	_play_video(0)
+
+func _play_video(index: int) -> void:
+	video_player.stream = VIDEOS[index]
+	video_player.play()
 
 func _input(event: InputEvent) -> void:
-	# Ou au clic / touche pour passer plus vite
-	if event is InputEventMouseButton and event.pressed:
-		GameManager.start_game()
-	if event is InputEventKey and event.pressed:
-		GameManager.start_game()
-
-
-func _on_button_pressed() -> void:
-	GameManager.start_game()
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		current_index += 1
+		if current_index >= VIDEOS.size():
+			GameManager.start_game()
+		else:
+			_play_video(current_index)

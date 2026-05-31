@@ -31,4 +31,9 @@ offset_right = 8.0
 offset_bottom = 8.0
 text = "Play"
 
+[node name="VideoPlayer" type="VideoStreamPlayer" parent="." unique_id=1604688772]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

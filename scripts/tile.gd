@@ -110,7 +110,7 @@ func disinfest() -> void:
 func get_cout() -> int:
 	if is_infested or is_blocked or is_blocked_temp:
 		return 0
-	var avancement_multi: float = 2.0 + (GameManager.avancement_enemy / 10)
+	var avancement_multi: float = 1.0 + (GameManager.avancement_enemy / 10)
 	return int(ceil(COUT_BASE * avancement_multi))
 	
 #func get_cout() -> int:

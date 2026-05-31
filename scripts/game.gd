@@ -171,7 +171,7 @@ func _on_avancement_changed(value: float) -> void:
 
 func _reset_game() -> void:
 	# Calcule le bonus de graines
-	var bonus: int = int(floor(GameManager.graines / 3))
+	var bonus: int = GameManager.graines
 	
 	map.regenerate()
 	
