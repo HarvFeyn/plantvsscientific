@@ -24,10 +24,12 @@ buses/default_bus_layout="uid://dvm4osxpikqj2"
 SceneManager="*uid://ufgyaq2h5pbi"
 GameManager="*uid://co2fpkc3y66aq"
 AudioManager="*uid://np14knf0vqfe"
+UiThemes="*uid://bwk1m7istcpn1"
 
 [display]
 
 window/size/viewport_height=780
+window/stretch/mode="canvas_items"
 
 [dotnet]
 

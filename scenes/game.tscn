@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cqng70keu8fc2" path="res://assets/sprites/bottom_left_hud.png" id="2_lbhrr"]
 [ext_resource type="Script" uid="uid://d5f4yo24k2p5" path="res://scripts/map.gd" id="2_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://cyoq0bv6qtrke" path="res://scenes/tile.tscn" id="3_lbhrr"]
+[ext_resource type="FontFile" uid="uid://fi2wiv07digh" path="res://assets/fonts/W95F.otf" id="4_ir15t"]
 [ext_resource type="Texture2D" uid="uid://di60ahxy0chei" path="res://assets/sprites/ui_ressource_graine.png" id="4_p57ef"]
 [ext_resource type="Texture2D" uid="uid://cfo8fr7i7p76t" path="res://assets/sprites/water_circle.png" id="5_u5sy4"]
 [ext_resource type="Texture2D" uid="uid://cr18115lapy3f" path="res://assets/sprites/empty_circle.png" id="6_0tnpc"]
@@ -94,6 +95,7 @@ offset_right = 84.0
 offset_bottom = 46.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_ir15t")
 theme_override_font_sizes/font_size = 22
 text = "0"
 horizontal_alignment = 1
@@ -124,6 +126,7 @@ offset_left = 75.0
 offset_top = 647.0
 offset_right = 136.0
 offset_bottom = 678.0
+theme_override_fonts/font = ExtResource("4_ir15t")
 theme_override_font_sizes/font_size = 16
 
 [node name="CircleWater1" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=2073692368]
@@ -202,7 +205,7 @@ position = Vector2(50, 50)
 scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_ir15t")
 animation = &"hover"
-frame_progress = 0.43786758
+frame_progress = 0.43415442
 
 [node name="EnemyControl" type="Control" parent="HUD" unique_id=626475114]
 layout_mode = 3
@@ -227,6 +230,7 @@ offset_right = 657.0
 offset_bottom = 748.0
 theme_override_colors/font_color = Color(0.7022208, 0.27216667, 0.08972103, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_ir15t")
 theme_override_font_sizes/font_size = 26
 text = "0%"
 
