@@ -14,6 +14,16 @@ const COUT_INFESTION: int = 10
 @onready var circle_colza_2: TextureRect = $HUD/DisplayInfoTuile/CircleColza2
 @onready var circle_colza_3: TextureRect = $HUD/DisplayInfoTuile/CircleColza3
 @onready var turn_button: TextureRect = $HUD/TurnButton
+@onready var reset_button_area: Control = $HUD/ResetButtonArea
+@onready var reset_button: AnimatedSprite2D = $HUD/ResetButtonArea/ResetButton
+@onready var percent_enemy: Label = $HUD/EnemyControl/PercentEnemy
+@onready var enemy_marker: TextureRect = $HUD/EnemyControl/ProgressTrack/EnemyMarker
+@onready var progress_track: Control = $HUD/EnemyControl/ProgressTrack
+@onready var popup_reset: Control = $HUD/PopupReset
+@onready var btn_confirm: Control = $HUD/PopupReset/BtnConfirm
+@onready var btn_cancel:  Control = $HUD/PopupReset/BtnCancel
+
+var hovered_button: String = ""
 
 const TURN_BTN_NORMAL := preload("uid://xldyiccvygfc")
 const TURN_BTN_HOVER  := preload("uid://nq6syptfxea3")
@@ -30,6 +40,18 @@ func _ready() -> void:
 	GameManager.avancement_changed.connect(_on_avancement_changed)
 	turn_button.mouse_entered.connect(_on_turn_button_entered)
 	turn_button.mouse_exited.connect(_on_turn_button_exited)
+	reset_button_area.mouse_entered.connect(_on_reset_button_entered)
+	reset_button_area.mouse_exited.connect(_on_reset_button_exited)
+	var frame_size := reset_button.sprite_frames.get_frame_texture("hover", 0).get_size()
+	reset_button_area.custom_minimum_size = frame_size
+	reset_button_area.size = frame_size
+	turn_button.mouse_entered.connect(_on_turn_button_entered)
+	turn_button.mouse_exited.connect(_on_turn_button_exited)
+	popup_reset.hide()
+	btn_confirm.mouse_entered.connect(func(): hovered_button = "confirm")
+	btn_confirm.mouse_exited.connect(func():  hovered_button = "")
+	btn_cancel.mouse_entered.connect(func():  hovered_button = "cancel")
+	btn_cancel.mouse_exited.connect(func():   hovered_button = "")
 	
 func _process(delta: float) -> void:
 	_handle_camera(delta)
@@ -38,11 +60,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		GameManager.go_to_menu()
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		if map.ui_hovered:
-			GameManager.next_turn()
-			
 # ── Caméra ────────────────────────────────────────────────────
 
 func _setup_camera() -> void:
@@ -113,11 +130,14 @@ func _on_graines_changed(value: int) -> void:
 	graines_label.text = str(value)
 
 func _on_avancement_changed(value: float) -> void:
-	$HUD/TopBar/HBoxContainer/HBoxContainer2/Label.text = "Ennemi : %.0f%%" % value
+	percent_enemy.text = "%.0f%%" % value
+	_update_enemy_marker(value)
 
 func _reset_game() -> void:
 	# Calcule le bonus de graines
 	var bonus: int = int(floor(GameManager.graines / 3))
+	
+	map.regenerate()
 	
 	# Remet toutes les tuiles à leur état de base
 	for x in map.MAP_WIDTH:
@@ -134,14 +154,13 @@ func _reset_game() -> void:
 	GameManager.avancement_enemy = 0.0
 	GameManager.graines = bonus
 	GameManager.current_turn = 1
-	GameManager.turn_changed.emit(1)
 
 
 func _on_btn_resets_pressed() -> void:
 	_reset_game()
 
 func _process_enemy_attack() -> void:
-	var avancement: float = GameManager.avancement_enemy
+	var avancement: int = GameManager.avancement_enemy
 	
 	# Rien en dessous de 20%
 	if avancement <= 20.0:
@@ -199,17 +218,57 @@ func _on_tile_hovered(tile) -> void:
 		2: 
 			circle_colza_2.texture = preload("uid://cen4ss4gsehbq")
 			circle_colza_3.texture = preload("uid://cen4ss4gsehbq")
-	
+
 func _on_turn_button_entered() -> void:
 	turn_button.texture = TURN_BTN_HOVER
 	map.ui_hovered = true
+	hovered_button = "next_turn"
 
 func _on_turn_button_exited() -> void:
 	turn_button.texture = TURN_BTN_NORMAL
 	map.ui_hovered = false
-	print("ui_hovered : ", map.ui_hovered)
-	
-func _on_turn_button_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			GameManager.next_turn()
+	hovered_button = ""
+
+func _on_reset_button_entered() -> void:
+	map.ui_hovered = true
+	hovered_button = "reset"
+	reset_button.play("hover")
+
+
+func _on_reset_button_exited() -> void:
+	map.ui_hovered = false
+	hovered_button = ""
+	reset_button.stop()
+	reset_button.frame = 0
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		match hovered_button:
+			"next_turn": GameManager.next_turn()
+			"reset":     _open_popup_reset()
+			"confirm":   _confirm_reset()
+			"cancel":    _cancel_reset()
+
+func _update_enemy_marker(value: float) -> void:
+	var track_width: float = progress_track.size.x
+	var marker_width: float = enemy_marker.size.x
+	# Calcule la position entre 0 et la largeur de la piste
+	var target_x: float = (value / 100.0) * (track_width - marker_width)
+	# Anime le déplacement
+	var tween := create_tween()
+	tween.tween_property(enemy_marker, "position:x", target_x, 0.3)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+		
+func _open_popup_reset() -> void:
+	popup_reset.show()
+	map.ui_hovered = true  # bloque la map pendant la popup
+
+func _confirm_reset() -> void:
+	popup_reset.hide()
+	map.ui_hovered = false
+	_reset_game()
+
+func _cancel_reset() -> void:
+	popup_reset.hide()
+	map.ui_hovered = false
+	hovered_button = ""

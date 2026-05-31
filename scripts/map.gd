@@ -224,3 +224,14 @@ func get_neighbors(x: int, y: int) -> Array:
 
 func get_map_size() -> Vector2:
 	return Vector2(MAP_WIDTH * TILE_SIZE, MAP_HEIGHT * TILE_SIZE)
+	
+func regenerate() -> void:
+	# Supprime toutes les tuiles existantes
+	for child in grid_container.get_children():
+		child.queue_free()
+	
+	# Réinitialise la grille
+	grid.clear()
+	
+	# Regénère
+	_generate_grid()

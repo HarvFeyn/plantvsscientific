@@ -10,9 +10,39 @@
 [ext_resource type="Texture2D" uid="uid://cr18115lapy3f" path="res://assets/sprites/empty_circle.png" id="6_0tnpc"]
 [ext_resource type="Texture2D" uid="uid://cen4ss4gsehbq" path="res://assets/sprites/colza_circle.png" id="6_gee14"]
 [ext_resource type="Texture2D" uid="uid://xldyiccvygfc" path="res://assets/sprites/button_turn.png" id="8_vtaks"]
+[ext_resource type="Texture2D" uid="uid://dodrc3qs5gga" path="res://assets/sprites/os_anim.png" id="9_kvpfn"]
+[ext_resource type="Texture2D" uid="uid://clbnffprxv10x" path="res://assets/sprites/enemy.png" id="10_dinhu"]
+[ext_resource type="Texture2D" uid="uid://6em6uj7kxbij" path="res://assets/sprites/flint.png" id="11_kvuet"]
+[ext_resource type="Texture2D" uid="uid://cl12yei548d0o" path="res://assets/sprites/popup_reset.png" id="12_trtic"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lnu2h"]
-size = Vector2(160, 160)
+[sub_resource type="AtlasTexture" id="AtlasTexture_dinhu"]
+atlas = ExtResource("9_kvpfn")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kvuet"]
+atlas = ExtResource("9_kvpfn")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_trtic"]
+atlas = ExtResource("9_kvpfn")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ir15t"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dinhu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kvuet")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_trtic")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 3.0
+}]
 
 [node name="game" type="Node2D" unique_id=133573637]
 script = ExtResource("1_uwrxv")
@@ -27,46 +57,6 @@ anchor_right = 1.0
 grow_horizontal = 2
 size_flags_horizontal = 4
 mouse_filter = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HUD/TopBar" unique_id=1919288888]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-mouse_filter = 2
-theme_override_constants/separation = 32
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="HUD/TopBar/HBoxContainer" unique_id=1096993703]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="HUD/TopBar/HBoxContainer/HBoxContainer2" unique_id=1890856107]
-layout_mode = 2
-text = "Ennemi : 0%"
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="HUD/TopBar/HBoxContainer" unique_id=757735851]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="HBoxContainer4" type="HBoxContainer" parent="HUD/TopBar/HBoxContainer" unique_id=1421146453]
-layout_mode = 2
-
-[node name="Buttons" type="HBoxContainer" parent="HUD/TopBar" unique_id=308136984]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -170.0
-offset_top = -40.0
-grow_horizontal = 0
-grow_vertical = 0
-mouse_filter = 2
-theme_override_constants/separation = 10
-
-[node name="BtnResets" type="Button" parent="HUD/TopBar/Buttons" unique_id=658197318]
-layout_mode = 2
-text = "Reset"
 
 [node name="BottomBar" type="TextureRect" parent="HUD" unique_id=2008127624]
 visibility_layer = 17
@@ -120,73 +110,74 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 30.0
-offset_top = 550.0
-offset_right = 222.0
-offset_bottom = 665.0
+offset_left = 40.0
+offset_top = 594.0
+offset_right = 242.0
+offset_bottom = 719.0
 grow_vertical = 0
-scale = Vector2(1.5, 1.5)
 mouse_filter = 0
 texture = ExtResource("2_lbhrr")
 
 [node name="TerreType" type="Label" parent="HUD/DisplayInfoTuile" unique_id=425625573]
 layout_mode = 0
-offset_left = 78.0
-offset_top = 603.0
-offset_right = 139.0
-offset_bottom = 634.0
-theme_override_font_sizes/font_size = 22
-
-[node name="RectangleShape2D" type="CollisionShape2D" parent="HUD/DisplayInfoTuile/TerreType" unique_id=837362544]
-position = Vector2(80, 80)
-shape = SubResource("RectangleShape2D_lnu2h")
+offset_left = 75.0
+offset_top = 647.0
+offset_right = 136.0
+offset_bottom = 678.0
+theme_override_font_sizes/font_size = 16
 
 [node name="CircleWater1" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=2073692368]
 layout_mode = 0
-offset_left = 75.0
-offset_top = 692.0
-offset_right = 115.0
-offset_bottom = 732.0
+offset_left = 74.00001
+offset_top = 713.0
+offset_right = 114.00001
+offset_bottom = 753.0
+scale = Vector2(0.6, 0.6)
 texture = ExtResource("5_u5sy4")
 
 [node name="CircleWater2" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=904963245]
 layout_mode = 0
-offset_left = 125.0
-offset_top = 692.0
-offset_right = 165.0
-offset_bottom = 732.0
+offset_left = 113.00001
+offset_top = 713.0
+offset_right = 153.0
+offset_bottom = 753.0
+scale = Vector2(0.6, 0.6)
 texture = ExtResource("6_0tnpc")
 
 [node name="CircleWater3" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=1654377516]
 layout_mode = 0
-offset_left = 175.0
-offset_top = 692.0
-offset_right = 215.0
-offset_bottom = 732.0
+offset_left = 151.0
+offset_top = 713.0
+offset_right = 191.0
+offset_bottom = 753.0
+scale = Vector2(0.6, 0.6)
 texture = ExtResource("6_0tnpc")
 
 [node name="CircleColza1" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=1061381913]
 layout_mode = 0
-offset_left = 75.0
-offset_top = 640.0
-offset_right = 115.0
-offset_bottom = 680.0
+offset_left = 74.00001
+offset_top = 678.0
+offset_right = 114.00001
+offset_bottom = 718.0
+scale = Vector2(0.6, 0.6)
 texture = ExtResource("6_gee14")
 
 [node name="CircleColza2" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=1045745528]
 layout_mode = 0
-offset_left = 125.0
-offset_top = 640.0
-offset_right = 165.0
-offset_bottom = 680.0
+offset_left = 113.00001
+offset_top = 678.0
+offset_right = 153.0
+offset_bottom = 718.0
+scale = Vector2(0.6, 0.6)
 texture = ExtResource("6_0tnpc")
 
 [node name="CircleColza3" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=1000984572]
 layout_mode = 0
-offset_left = 175.0
-offset_top = 640.0
-offset_right = 215.0
-offset_bottom = 680.0
+offset_left = 151.0
+offset_top = 678.0
+offset_right = 191.0
+offset_bottom = 718.0
+scale = Vector2(0.6, 0.6)
 texture = ExtResource("6_0tnpc")
 
 [node name="TurnButton" type="TextureRect" parent="HUD" unique_id=1063608715]
@@ -194,7 +185,115 @@ offset_left = 912.0
 offset_top = 673.0
 offset_right = 1122.0
 offset_bottom = 743.0
+mouse_default_cursor_shape = 2
 texture = ExtResource("8_vtaks")
+
+[node name="ResetButtonArea" type="Control" parent="HUD" unique_id=53388949]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 1008.0
+offset_top = 35.0
+offset_right = 1120.0
+offset_bottom = 137.0
+mouse_default_cursor_shape = 2
+
+[node name="ResetButton" type="AnimatedSprite2D" parent="HUD/ResetButtonArea" unique_id=1684890427]
+position = Vector2(50, 50)
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_ir15t")
+animation = &"hover"
+frame_progress = 0.24408656
+
+[node name="EnemyControl" type="Control" parent="HUD" unique_id=626475114]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Enemy" type="TextureRect" parent="HUD/EnemyControl" unique_id=1252545437]
+layout_mode = 0
+offset_left = 364.0
+offset_top = 647.0
+offset_right = 664.0
+offset_bottom = 747.0
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("10_dinhu")
+
+[node name="PercentEnemy" type="Label" parent="HUD/EnemyControl" unique_id=1361793833]
+layout_mode = 0
+offset_left = 605.0
+offset_top = 712.0
+offset_right = 657.0
+offset_bottom = 748.0
+theme_override_colors/font_color = Color(0.7022208, 0.27216667, 0.08972103, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 26
+text = "0%"
+
+[node name="ProgressTrack" type="Control" parent="HUD/EnemyControl" unique_id=1892313640]
+anchors_preset = 0
+offset_left = 451.0
+offset_top = 749.0
+offset_right = 682.0
+offset_bottom = 771.0
+
+[node name="EnemyMarker" type="TextureRect" parent="HUD/EnemyControl/ProgressTrack" unique_id=297557034]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -0.99999994
+offset_top = -19.0
+offset_right = 39.0
+offset_bottom = 21.0
+grow_vertical = 2
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("11_kvuet")
+
+[node name="PopupReset" type="TextureRect" parent="HUD" unique_id=1435591675]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("12_trtic")
+
+[node name="PopupBg" type="TextureRect" parent="HUD/PopupReset" unique_id=201681787]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BtnConfirm" type="Control" parent="HUD/PopupReset" unique_id=47108487]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="Button" parent="HUD/PopupReset/BtnConfirm" unique_id=1550276865]
+layout_mode = 0
+offset_left = 231.0
+offset_top = 277.0
+offset_right = 271.0
+offset_bottom = 317.0
+
+[node name="BtnCancel" type="Control" parent="HUD/PopupReset" unique_id=1399159451]
+anchors_preset = 0
+offset_left = 154.0
+offset_top = 18.0
+offset_right = 194.0
+offset_bottom = 58.0
+
+[node name="TextureRect" type="Button" parent="HUD/PopupReset/BtnCancel" unique_id=1996258017]
+layout_mode = 0
+offset_left = -43.0
+offset_top = 256.0
+offset_right = -3.0
+offset_bottom = 296.0
 
 [node name="Map" type="Node2D" parent="." unique_id=1434601639]
 position = Vector2(0, 48)
@@ -202,5 +301,3 @@ script = ExtResource("2_lnu2h")
 tile_scene = ExtResource("3_lbhrr")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2008711142]
-
-[connection signal="pressed" from="HUD/TopBar/Buttons/BtnResets" to="." method="_on_btn_resets_pressed"]

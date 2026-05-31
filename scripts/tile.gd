@@ -107,7 +107,7 @@ func get_cout() -> int:
 func calculate_rendement() -> void:
 	var multi_terre = 1
 	match terre:
-		TerreType.ARGILE: multi_terre = 0.5
-		TerreType.LIMON: multi_terre = 0.25
-		TerreType.TERRE_DE_GROIE: multi_terre = 1
-	rendement = ceil((colzas - eau + 3) * multi_terre)
+		TerreType.ARGILE: multi_terre = 1.5
+		TerreType.LIMON: multi_terre = 1
+		TerreType.TERRE_DE_GROIE: multi_terre = 2
+	rendement = ceil((colzas - eau + 2) * 2 * multi_terre)
