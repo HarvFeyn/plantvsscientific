@@ -27,17 +27,13 @@ func _ready() -> void:
 func go_to(path: String) -> void:
 	if _is_transitioning:
 		return
-	
 	while _color_rect == null:
 		await get_tree().process_frame
-	
 	_is_transitioning = true
-	_color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE  # ignore les clics pendant la transition
-	
-	#await _fade_in()
+	_color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	await _fade_in()
 	get_tree().change_scene_to_file(path)
-	#await _fade_out()
-	
+	await _fade_out()
 	_is_transitioning = false
 	scene_changed.emit(path)
 

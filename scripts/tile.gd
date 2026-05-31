@@ -16,11 +16,15 @@ var rendement: int = 5
 @onready var highlight: ColorRect = $Highlight
 @onready var infestation: Sprite2D = $Infestation
 @onready var cadre: Sprite2D = $Cadre
+var is_blocked: bool = false
+@onready var bloqueur: AnimatedSprite2D = $Bloqueur
+var is_blocked_temp: bool = false
+@onready var bloqueur_temp: AnimatedSprite2D = $BloqueurTemp
 
 const CADRE_SPRITE := preload("res://assets/sprites/cadre_all.png")
 const INFESTATION_SPRITE := preload("res://assets/sprites/orobanche.png")
-const COUT_BASE    := 20
-const COUT_PAR_PAS := 10
+const COUT_BASE    := 30
+const COUT_PAR_PAS := 60
 
 const TERRE_SPRITES := [
 	preload("res://assets/sprites/limon.png"),
@@ -61,14 +65,19 @@ func _ready() -> void:
 	# Infestation
 	infestation.texture = INFESTATION_SPRITE
 	infestation.centered = false
-	infestation.scale = Vector2(2, 2)
-	infestation.position = Vector2(-45, -50)
+	infestation.scale = Vector2(1.9, 1.9)
+	infestation.position = Vector2(-50, -60)
 	infestation.hide()
 
 	# Colza — basé sur la variable colzas
 	colza_sprite.texture = COLZA_SPRITES[colzas]
 	colza_sprite.centered = false
 	colza_sprite.scale = Vector2(2, 2)
+	
+	bloqueur.centered = false
+	bloqueur.scale = Vector2(2, 2)
+	bloqueur.hide()
+	bloqueur_temp.hide()
 	
 	cadre.texture = CADRE_SPRITE
 	cadre.centered = false
@@ -99,11 +108,17 @@ func disinfest() -> void:
 	infestation.hide()
 
 func get_cout() -> int:
-	if is_infested:
+	if is_infested or is_blocked or is_blocked_temp:
 		return 0
-	var distance: int = abs(grid_x - 4) + abs(grid_y - 2)
-	return COUT_BASE + distance * COUT_PAR_PAS
+	var avancement_multi: float = 2.0 + (GameManager.avancement_enemy / 10)
+	return int(ceil(COUT_BASE * avancement_multi))
 	
+#func get_cout() -> int:
+	#if is_infested or is_blocked or is_blocked_temp:
+		#return 0
+	#var distance: int = abs(grid_x - 4) + abs(grid_y - 2) - 1
+	#return COUT_BASE + distance * COUT_PAR_PAS
+
 func calculate_rendement() -> void:
 	var multi_terre = 1
 	match terre:
@@ -111,3 +126,23 @@ func calculate_rendement() -> void:
 		TerreType.LIMON: multi_terre = 1
 		TerreType.TERRE_DE_GROIE: multi_terre = 2
 	rendement = ceil((colzas - eau + 2) * 2 * multi_terre)
+
+func block() -> void:
+	is_blocked = true
+	rendement = 0
+	bloqueur.show()
+	bloqueur.play("appear")
+	if is_infested:
+		disinfest()
+
+func block_temp() -> void:
+	is_blocked_temp = true
+	bloqueur_temp.show()
+	bloqueur_temp.play("appear")
+	if is_infested:
+		disinfest()
+		
+func unblock_temp() -> void:
+	is_blocked_temp = false
+	bloqueur_temp.hide()
+	infest()

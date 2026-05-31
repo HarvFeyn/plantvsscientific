@@ -12,8 +12,8 @@ func _ready() -> void:
 	_music_player = AudioStreamPlayer.new()
 	_music_player.bus = BUS_MUSIC
 	add_child(_music_player)
-
-
+	AudioManager.play_music(preload("uid://crkmrcvp3wnj8"),-6.0)
+	
 # --- Musique ---
 
 func play_music(stream: AudioStream, volume_db := 0.0) -> void:

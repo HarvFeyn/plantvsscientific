@@ -12,9 +12,10 @@
 [ext_resource type="Texture2D" uid="uid://cen4ss4gsehbq" path="res://assets/sprites/colza_circle.png" id="6_gee14"]
 [ext_resource type="Texture2D" uid="uid://xldyiccvygfc" path="res://assets/sprites/button_turn.png" id="8_vtaks"]
 [ext_resource type="Texture2D" uid="uid://dodrc3qs5gga" path="res://assets/sprites/os_anim.png" id="9_kvpfn"]
-[ext_resource type="Texture2D" uid="uid://clbnffprxv10x" path="res://assets/sprites/enemy.png" id="10_dinhu"]
+[ext_resource type="Texture2D" uid="uid://b1iyp463moese" path="res://assets/sprites/Enemy.png" id="10_ir15t"]
 [ext_resource type="Texture2D" uid="uid://6em6uj7kxbij" path="res://assets/sprites/flint.png" id="11_kvuet"]
 [ext_resource type="Texture2D" uid="uid://cl12yei548d0o" path="res://assets/sprites/popup_reset.png" id="12_trtic"]
+[ext_resource type="Texture2D" uid="uid://btav4p4hwr11i" path="res://assets/sprites/fire3.png" id="14_ca42v"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dinhu"]
 atlas = ExtResource("9_kvpfn")
@@ -183,30 +184,6 @@ offset_bottom = 718.0
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("6_0tnpc")
 
-[node name="TurnButton" type="TextureRect" parent="HUD" unique_id=1063608715]
-offset_left = 912.0
-offset_top = 673.0
-offset_right = 1122.0
-offset_bottom = 743.0
-mouse_default_cursor_shape = 2
-texture = ExtResource("8_vtaks")
-
-[node name="ResetButtonArea" type="Control" parent="HUD" unique_id=53388949]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 1008.0
-offset_top = 35.0
-offset_right = 1120.0
-offset_bottom = 137.0
-mouse_default_cursor_shape = 2
-
-[node name="ResetButton" type="AnimatedSprite2D" parent="HUD/ResetButtonArea" unique_id=1684890427]
-position = Vector2(50, 50)
-scale = Vector2(1.5, 1.5)
-sprite_frames = SubResource("SpriteFrames_ir15t")
-animation = &"hover"
-frame_progress = 0.43415442
-
 [node name="EnemyControl" type="Control" parent="HUD" unique_id=626475114]
 layout_mode = 3
 anchors_preset = 0
@@ -215,30 +192,30 @@ offset_bottom = 40.0
 
 [node name="Enemy" type="TextureRect" parent="HUD/EnemyControl" unique_id=1252545437]
 layout_mode = 0
-offset_left = 364.0
-offset_top = 647.0
-offset_right = 664.0
-offset_bottom = 747.0
-scale = Vector2(1.2, 1.2)
-texture = ExtResource("10_dinhu")
+offset_left = 189.0
+offset_top = 575.0
+offset_right = 489.0
+offset_bottom = 675.0
+scale = Vector2(2, 2)
+texture = ExtResource("10_ir15t")
 
 [node name="PercentEnemy" type="Label" parent="HUD/EnemyControl" unique_id=1361793833]
 layout_mode = 0
-offset_left = 605.0
-offset_top = 712.0
-offset_right = 657.0
-offset_bottom = 748.0
-theme_override_colors/font_color = Color(0.7022208, 0.27216667, 0.08972103, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+offset_left = 705.0
+offset_top = 714.0
+offset_right = 757.0
+offset_bottom = 750.0
+theme_override_colors/font_color = Color(0.7882353, 0.16862746, 0.14509805, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.59607846)
 theme_override_fonts/font = ExtResource("4_ir15t")
 theme_override_font_sizes/font_size = 26
 text = "0%"
 
 [node name="ProgressTrack" type="Control" parent="HUD/EnemyControl" unique_id=1892313640]
 anchors_preset = 0
-offset_left = 451.0
+offset_left = 410.0
 offset_top = 749.0
-offset_right = 682.0
+offset_right = 780.0
 offset_bottom = 771.0
 
 [node name="EnemyMarker" type="TextureRect" parent="HUD/EnemyControl/ProgressTrack" unique_id=297557034]
@@ -253,6 +230,10 @@ offset_bottom = 21.0
 grow_vertical = 2
 scale = Vector2(0.7, 0.7)
 texture = ExtResource("11_kvuet")
+
+[node name="fire" type="Sprite2D" parent="HUD" unique_id=1671694371]
+position = Vector2(813, 735)
+texture = ExtResource("14_ca42v")
 
 [node name="PopupReset" type="Control" parent="HUD" unique_id=1913288018]
 layout_mode = 3
@@ -303,6 +284,49 @@ offset_top = 546.0
 offset_right = 551.0
 offset_bottom = 586.0
 text = "Annuler"
+
+[node name="TurnControl" type="Control" parent="HUD" unique_id=50924530]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TurnButton" type="TextureRect" parent="HUD/TurnControl" unique_id=1063608715]
+layout_mode = 0
+offset_left = 912.0
+offset_top = 673.0
+offset_right = 1122.0
+offset_bottom = 743.0
+mouse_default_cursor_shape = 2
+texture = ExtResource("8_vtaks")
+
+[node name="TurnIcome" type="Label" parent="HUD/TurnControl" unique_id=2006961691]
+layout_mode = 0
+offset_left = 1019.0
+offset_top = 716.0
+offset_right = 1059.0
+offset_bottom = 744.0
+theme_override_colors/font_color = Color(0.5842228, 0.9767125, 0.4663415, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.13725491)
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
+text = "+5"
+
+[node name="ResetButtonArea" type="Control" parent="HUD" unique_id=53388949]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 904.0
+offset_top = -1.0
+offset_right = 1151.0
+offset_bottom = 106.0
+mouse_default_cursor_shape = 2
+
+[node name="ResetButton" type="AnimatedSprite2D" parent="HUD/ResetButtonArea" unique_id=1684890427]
+position = Vector2(165, 82)
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_ir15t")
+animation = &"hover"
+frame_progress = 0.38660392
 
 [node name="Map" type="Node2D" parent="." unique_id=1434601639]
 position = Vector2(0, 48)

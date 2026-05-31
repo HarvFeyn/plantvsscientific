@@ -1,6 +1,143 @@
 [gd_scene format=3 uid="uid://cyoq0bv6qtrke"]
 
 [ext_resource type="Script" uid="uid://cm8b4ulbkaqwh" path="res://scripts/tile.gd" id="1_3dk36"]
+[ext_resource type="Texture2D" uid="uid://cksb4jgvgeib" path="res://assets/sprites/menir_anim.png" id="2_ywnoi"]
+[ext_resource type="Texture2D" uid="uid://bwh6wr2cwykea" path="res://assets/sprites/anim_enemy.png" id="3_jy7pm"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jy7pm"]
+atlas = ExtResource("2_ywnoi")
+region = Rect2(0, 0, 64, 84)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q7utx"]
+atlas = ExtResource("2_ywnoi")
+region = Rect2(64, 0, 64, 84)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6p3j2"]
+atlas = ExtResource("2_ywnoi")
+region = Rect2(128, 0, 64, 84)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gtpg2"]
+atlas = ExtResource("2_ywnoi")
+region = Rect2(192, 0, 64, 84)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a2bny"]
+atlas = ExtResource("2_ywnoi")
+region = Rect2(256, 0, 64, 84)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_284l3"]
+atlas = ExtResource("2_ywnoi")
+region = Rect2(320, 0, 64, 84)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j3iir"]
+atlas = ExtResource("2_ywnoi")
+region = Rect2(384, 0, 64, 84)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j8k5k"]
+atlas = ExtResource("2_ywnoi")
+region = Rect2(448, 0, 64, 84)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w8vld"]
+atlas = ExtResource("2_ywnoi")
+region = Rect2(512, 0, 64, 84)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jm5cm"]
+atlas = ExtResource("2_ywnoi")
+region = Rect2(576, 0, 64, 84)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vknvr"]
+atlas = ExtResource("2_ywnoi")
+region = Rect2(640, 0, 64, 84)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jdkp0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jy7pm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q7utx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6p3j2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gtpg2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a2bny")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_284l3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j3iir")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j8k5k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w8vld")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jm5cm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vknvr")
+}],
+"loop": false,
+"name": &"appear",
+"speed": 7.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jdkp0"]
+atlas = ExtResource("3_jy7pm")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q8xw3"]
+atlas = ExtResource("3_jy7pm")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lkxpj"]
+atlas = ExtResource("3_jy7pm")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lf0mp"]
+atlas = ExtResource("3_jy7pm")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ufjw7"]
+atlas = ExtResource("3_jy7pm")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3ngql"]
+atlas = ExtResource("3_jy7pm")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gqnqq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jdkp0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q8xw3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lkxpj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lf0mp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ufjw7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3ngql")
+}],
+"loop": true,
+"name": &"appear",
+"speed": 5.0
+}]
 
 [node name="tile" type="Node2D" unique_id=1264344581]
 script = ExtResource("1_3dk36")
@@ -9,11 +146,22 @@ script = ExtResource("1_3dk36")
 
 [node name="WaterSprite" type="Sprite2D" parent="." unique_id=1576899412]
 
-[node name="Infestation" type="Sprite2D" parent="." unique_id=448898646]
-
 [node name="Cadre" type="Sprite2D" parent="." unique_id=643728815]
 
 [node name="ColzaSprite" type="Sprite2D" parent="." unique_id=1128720460]
+
+[node name="Infestation" type="Sprite2D" parent="." unique_id=448898646]
+
+[node name="Bloqueur" type="AnimatedSprite2D" parent="." unique_id=1673565881]
+position = Vector2(0, -41)
+sprite_frames = SubResource("SpriteFrames_jdkp0")
+animation = &"appear"
+
+[node name="BloqueurTemp" type="AnimatedSprite2D" parent="." unique_id=1064291119]
+position = Vector2(63.000004, 61)
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_gqnqq")
+animation = &"appear"
 
 [node name="Highlight" type="ColorRect" parent="." unique_id=51563592]
 offset_right = 128.0

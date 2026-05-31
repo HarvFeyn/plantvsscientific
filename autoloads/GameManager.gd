@@ -7,6 +7,7 @@ signal game_paused(is_paused: bool)
 # Chemins des scènes — modifie-les selon ton projet
 const SCENE_MENU := "res://scenes/menu.tscn"
 const SCENE_GAME := "res://scenes/game.tscn"
+const SCENE_INTRO := "uid://bye6bxvtvate2"
 
 var is_paused: bool = false
 var high_score: int = 0
@@ -34,7 +35,9 @@ func _set_graines(value: int) -> void:
 func start_game() -> void:
 	SceneManager.go_to(SCENE_GAME)
 
-
+func start_intro() -> void:
+	SceneManager.go_to(SCENE_INTRO)
+	
 func go_to_menu() -> void:
 	SceneManager.go_to(SCENE_MENU)
 

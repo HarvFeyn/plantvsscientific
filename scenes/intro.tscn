@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://bye6bxvtvate2"]
+
+[ext_resource type="Script" uid="uid://b207ml8wrgr7d" path="res://scripts/intro.gd" id="1_ioskq"]
+
+[node name="Intro" type="Control" unique_id=1780816999]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ioskq")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=611101509]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 0.7176471, 1)
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=936919359]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Button" type="Button" parent="." unique_id=352585061]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Play"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
