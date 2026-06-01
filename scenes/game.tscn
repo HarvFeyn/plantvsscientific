@@ -12,10 +12,13 @@
 [ext_resource type="Texture2D" uid="uid://cen4ss4gsehbq" path="res://assets/sprites/colza_circle.png" id="6_gee14"]
 [ext_resource type="Texture2D" uid="uid://xldyiccvygfc" path="res://assets/sprites/button_turn.png" id="8_vtaks"]
 [ext_resource type="Texture2D" uid="uid://dodrc3qs5gga" path="res://assets/sprites/os_anim.png" id="9_kvpfn"]
-[ext_resource type="Texture2D" uid="uid://b1iyp463moese" path="res://assets/sprites/Enemy.png" id="10_ir15t"]
+[ext_resource type="Texture2D" uid="uid://bv7lxjmnrj76w" path="res://assets/sprites/Enemy.png" id="10_ir15t"]
 [ext_resource type="Texture2D" uid="uid://6em6uj7kxbij" path="res://assets/sprites/flint.png" id="11_kvuet"]
 [ext_resource type="Texture2D" uid="uid://cl12yei548d0o" path="res://assets/sprites/popup_reset.png" id="12_trtic"]
 [ext_resource type="Texture2D" uid="uid://btav4p4hwr11i" path="res://assets/sprites/fire3.png" id="14_ca42v"]
+[ext_resource type="StyleBox" uid="uid://bdrt76g6m0m65" path="res://assets/themes/cardOverlay.tres" id="15_rysoc"]
+[ext_resource type="Texture2D" uid="uid://o3sklylm6qfo" path="res://assets/sprites/graine_cout.png" id="16_264po"]
+[ext_resource type="Theme" uid="uid://k7vpnxwgy1o6" path="res://assets/themes/labelCards.tres" id="16_ssvqc"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dinhu"]
 atlas = ExtResource("9_kvpfn")
@@ -46,6 +49,15 @@ animations = [{
 "speed": 3.0
 }]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_264po"]
+bg_color = Color(0, 0, 0, 0.5882353)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+
 [node name="game" type="Node2D" unique_id=133573637]
 script = ExtResource("1_uwrxv")
 
@@ -68,39 +80,6 @@ offset_bottom = 260.0
 scale = Vector2(3, 3)
 mouse_filter = 0
 texture = ExtResource("2_iywne")
-
-[node name="GrainesDisplay" type="Control" parent="HUD" unique_id=1012731130]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="TopLeftHud" type="TextureRect" parent="HUD/GrainesDisplay" unique_id=804445680]
-layout_mode = 0
-offset_left = 30.0
-offset_top = 21.0
-offset_right = 222.0
-offset_bottom = 85.0
-texture = ExtResource("4_p57ef")
-
-[node name="Label" type="Label" parent="HUD/GrainesDisplay" unique_id=2140855265]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 59.0
-offset_top = 15.0
-offset_right = 84.0
-offset_bottom = 46.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/font = ExtResource("4_ir15t")
-theme_override_font_sizes/font_size = 22
-text = "50"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="DisplayInfoTuile" type="Control" parent="HUD" unique_id=751263286]
 layout_mode = 3
@@ -188,24 +167,26 @@ texture = ExtResource("6_0tnpc")
 [node name="EnemyControl" type="Control" parent="HUD" unique_id=626475114]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 389.0
+offset_top = 603.0
+offset_right = 762.0
+offset_bottom = 776.0
 
 [node name="Enemy" type="TextureRect" parent="HUD/EnemyControl" unique_id=1252545437]
 layout_mode = 0
-offset_left = 189.0
-offset_top = 575.0
-offset_right = 489.0
-offset_bottom = 675.0
-scale = Vector2(2, 2)
+offset_left = 2.0
+offset_top = 14.0
+offset_right = 312.0
+offset_bottom = 140.0
+scale = Vector2(1.25, 1.25)
 texture = ExtResource("10_ir15t")
 
 [node name="PercentEnemy" type="Label" parent="HUD/EnemyControl" unique_id=1361793833]
 layout_mode = 0
-offset_left = 705.0
-offset_top = 714.0
-offset_right = 757.0
-offset_bottom = 750.0
+offset_left = 322.0
+offset_top = 102.0
+offset_right = 374.0
+offset_bottom = 138.0
 theme_override_colors/font_color = Color(0.7882353, 0.16862746, 0.14509805, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.59607846)
 theme_override_fonts/font = ExtResource("4_ir15t")
@@ -214,10 +195,10 @@ text = "0%"
 
 [node name="ProgressTrack" type="Control" parent="HUD/EnemyControl" unique_id=1892313640]
 anchors_preset = 0
-offset_left = 410.0
-offset_top = 749.0
-offset_right = 780.0
-offset_bottom = 771.0
+offset_left = 11.0
+offset_top = 148.0
+offset_right = 381.0
+offset_bottom = 170.0
 
 [node name="EnemyMarker" type="TextureRect" parent="HUD/EnemyControl/ProgressTrack" unique_id=297557034]
 layout_mode = 1
@@ -236,6 +217,33 @@ texture = ExtResource("11_kvuet")
 position = Vector2(813, 735)
 texture = ExtResource("14_ca42v")
 
+[node name="TurnControl" type="Control" parent="HUD" unique_id=50924530]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TurnButton" type="TextureRect" parent="HUD/TurnControl" unique_id=1063608715]
+layout_mode = 0
+offset_left = 912.0
+offset_top = 673.0
+offset_right = 1122.0
+offset_bottom = 743.0
+mouse_default_cursor_shape = 2
+texture = ExtResource("8_vtaks")
+
+[node name="TurnIcome" type="Label" parent="HUD/TurnControl" unique_id=2006961691]
+layout_mode = 0
+offset_left = 1019.0
+offset_top = 716.0
+offset_right = 1059.0
+offset_bottom = 744.0
+theme_override_colors/font_color = Color(0.5842228, 0.9767125, 0.4663415, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.13725491)
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
+text = "+5"
+
 [node name="PopupReset" type="Control" parent="HUD" unique_id=1913288018]
 layout_mode = 3
 anchors_preset = 15
@@ -252,7 +260,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.59607846)
+color = Color(0, 0, 0, 0.88235295)
 
 [node name="PopupReset" type="TextureRect" parent="HUD/PopupReset" unique_id=1435591675]
 layout_mode = 1
@@ -286,33 +294,6 @@ offset_right = 551.0
 offset_bottom = 586.0
 text = "Annuler"
 
-[node name="TurnControl" type="Control" parent="HUD" unique_id=50924530]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="TurnButton" type="TextureRect" parent="HUD/TurnControl" unique_id=1063608715]
-layout_mode = 0
-offset_left = 912.0
-offset_top = 673.0
-offset_right = 1122.0
-offset_bottom = 743.0
-mouse_default_cursor_shape = 2
-texture = ExtResource("8_vtaks")
-
-[node name="TurnIcome" type="Label" parent="HUD/TurnControl" unique_id=2006961691]
-layout_mode = 0
-offset_left = 1019.0
-offset_top = 716.0
-offset_right = 1059.0
-offset_bottom = 744.0
-theme_override_colors/font_color = Color(0.5842228, 0.9767125, 0.4663415, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.13725491)
-theme_override_fonts/font = ExtResource("4_ir15t")
-theme_override_font_sizes/font_size = 22
-text = "+5"
-
 [node name="ResetButtonArea" type="Control" parent="HUD" unique_id=53388949]
 layout_mode = 3
 anchors_preset = 0
@@ -344,7 +325,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.59607846)
+color = Color(0, 0, 0, 0.88235295)
 
 [node name="ShopContent" type="VBoxContainer" parent="HUD/ShopPopup" unique_id=2068670356]
 layout_mode = 1
@@ -359,65 +340,321 @@ offset_right = 22.0
 offset_bottom = 58.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 80
 
-[node name="ShopTitle" type="Label" parent="HUD/ShopPopup/ShopContent" unique_id=613786482]
+[node name="PanelTitle" type="PanelContainer" parent="HUD/ShopPopup/ShopContent" unique_id=1591873442]
 layout_mode = 2
+theme_override_styles/panel = ExtResource("15_rysoc")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD/ShopPopup/ShopContent/PanelTitle" unique_id=2126886447]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ShopTitle" type="Label" parent="HUD/ShopPopup/ShopContent/PanelTitle/MarginContainer" unique_id=613786482]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.26824662, 0.00079432584, 2.2862106e-07, 1)
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
+text = "Acheter des améliorations
+Les améliorations seront perdues à votre prochaine hibernations
+Acheter une carte augment le coût des autres cartes de 100"
+horizontal_alignment = 1
 
 [node name="Cards" type="HBoxContainer" parent="HUD/ShopPopup/ShopContent" unique_id=1681174930]
 layout_mode = 2
-theme_override_constants/separation = 30
+size_flags_vertical = 3
+theme_override_constants/separation = 50
 
-[node name="Card1" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards" unique_id=1988210468]
+[node name="PanelCard1" type="PanelContainer" parent="HUD/ShopPopup/ShopContent/Cards" unique_id=1547274955]
 layout_mode = 2
+theme_override_styles/panel = ExtResource("15_rysoc")
 
-[node name="CardName1" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card1" unique_id=1934948747]
+[node name="MarginCard1" type="MarginContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1" unique_id=669594856]
 layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 50
 
-[node name="CardDesc1" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card1" unique_id=1162437303]
+[node name="Card1" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1" unique_id=1988210468]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 50
 
-[node name="CardCost1" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card1" unique_id=560116922]
+[node name="InfosCard1" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1" unique_id=1865402312]
 layout_mode = 2
+theme_override_constants/separation = 20
 
-[node name="BuyBtn1" type="Button" parent="HUD/ShopPopup/ShopContent/Cards/Card1" unique_id=313375650]
+[node name="CardName1" type="RichTextLabel" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1/InfosCard1" unique_id=1831072454]
+custom_minimum_size = Vector2(100, 20)
 layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_font_sizes/normal_font_size = 22
+theme_override_font_sizes/bold_font_size = 22
+theme_override_font_sizes/bold_italics_font_size = 22
+theme_override_font_sizes/italics_font_size = 22
+theme_override_font_sizes/mono_font_size = 22
+bbcode_enabled = true
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="CardDesc1" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1/InfosCard1" unique_id=1162437303]
+custom_minimum_size = Vector2(275, 0)
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+autowrap_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1/InfosCard1" unique_id=352689087]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = -20
+
+[node name="CardCost1" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1/InfosCard1/HBoxContainer" unique_id=560116922]
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+horizontal_alignment = 1
+
+[node name="CostIcon1" type="TextureRect" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1/InfosCard1/HBoxContainer" unique_id=2085068187]
+layout_mode = 2
+texture = ExtResource("16_264po")
+
+[node name="BuyBtn1" type="Button" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1" unique_id=313375650]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
 text = "Acheter"
 
-[node name="Card2" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards" unique_id=248943786]
+[node name="PanelCard2" type="PanelContainer" parent="HUD/ShopPopup/ShopContent/Cards" unique_id=921185750]
 layout_mode = 2
+theme_override_styles/panel = ExtResource("15_rysoc")
 
-[node name="CardName2" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card2" unique_id=886270228]
+[node name="MarginCard2" type="MarginContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2" unique_id=225256059]
 layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 50
 
-[node name="CardDesc2" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card2" unique_id=377099259]
+[node name="Card2" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2" unique_id=1466627033]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 50
 
-[node name="CardCost2" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card2" unique_id=898836395]
+[node name="InfosCard2" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2" unique_id=349138384]
 layout_mode = 2
+theme_override_constants/separation = 20
 
-[node name="BuyBtn2" type="Button" parent="HUD/ShopPopup/ShopContent/Cards/Card2" unique_id=2105821374]
+[node name="CardName2" type="RichTextLabel" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2/InfosCard2" unique_id=1172389581]
+custom_minimum_size = Vector2(100, 20)
 layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_font_sizes/normal_font_size = 22
+theme_override_font_sizes/bold_font_size = 22
+theme_override_font_sizes/bold_italics_font_size = 22
+theme_override_font_sizes/italics_font_size = 22
+theme_override_font_sizes/mono_font_size = 22
+bbcode_enabled = true
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="CardDesc2" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2/InfosCard2" unique_id=1312970402]
+custom_minimum_size = Vector2(275, 0)
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+autowrap_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2/InfosCard2" unique_id=134320026]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = -20
+
+[node name="CardCost2" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2/InfosCard2/HBoxContainer" unique_id=1303632521]
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+horizontal_alignment = 1
+
+[node name="CostIcon2" type="TextureRect" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2/InfosCard2/HBoxContainer" unique_id=2145051670]
+layout_mode = 2
+texture = ExtResource("16_264po")
+
+[node name="BuyBtn2" type="Button" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2" unique_id=1908920243]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
 text = "Acheter"
 
-[node name="Card3" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards" unique_id=929161961]
+[node name="PanelCard3" type="PanelContainer" parent="HUD/ShopPopup/ShopContent/Cards" unique_id=145927286]
 layout_mode = 2
+theme_override_styles/panel = ExtResource("15_rysoc")
 
-[node name="CardName3" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card3" unique_id=267548194]
+[node name="MarginCard3" type="MarginContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3" unique_id=1208819488]
 layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 50
 
-[node name="CardDesc3" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card3" unique_id=390862400]
+[node name="Card3" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3" unique_id=956911432]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 50
 
-[node name="CardCost3" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card3" unique_id=287162158]
+[node name="InfosCard3" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3" unique_id=1486733026]
 layout_mode = 2
+theme_override_constants/separation = 20
 
-[node name="BuyBtn3" type="Button" parent="HUD/ShopPopup/ShopContent/Cards/Card3" unique_id=1571059588]
+[node name="CardName3" type="RichTextLabel" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3/InfosCard3" unique_id=835728646]
+custom_minimum_size = Vector2(100, 20)
 layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_font_sizes/normal_font_size = 22
+theme_override_font_sizes/bold_font_size = 22
+theme_override_font_sizes/bold_italics_font_size = 22
+theme_override_font_sizes/italics_font_size = 22
+theme_override_font_sizes/mono_font_size = 22
+bbcode_enabled = true
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="CardDesc3" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3/InfosCard3" unique_id=1836381025]
+custom_minimum_size = Vector2(275, 0)
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+autowrap_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3/InfosCard3" unique_id=409070372]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = -20
+
+[node name="CardCost3" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3/InfosCard3/HBoxContainer" unique_id=94118536]
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+horizontal_alignment = 1
+
+[node name="CostIcon3" type="TextureRect" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3/InfosCard3/HBoxContainer" unique_id=2030082593]
+layout_mode = 2
+texture = ExtResource("16_264po")
+
+[node name="BuyBtn3" type="Button" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3" unique_id=1234462011]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
 text = "Acheter"
 
 [node name="CloseShop" type="Button" parent="HUD/ShopPopup/ShopContent" unique_id=171195528]
 layout_mode = 2
-text = "Continuer"
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
+text = "Sortir d'hibernation"
+
+[node name="GrainesDisplay" type="Control" parent="HUD" unique_id=1012731130]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TopLeftHud" type="TextureRect" parent="HUD/GrainesDisplay" unique_id=804445680]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 21.0
+offset_right = 222.0
+offset_bottom = 85.0
+texture = ExtResource("4_p57ef")
+
+[node name="Label" type="Label" parent="HUD/GrainesDisplay" unique_id=2140855265]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 59.0
+offset_top = 15.0
+offset_right = 84.0
+offset_bottom = 46.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
+text = "50"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ImprovementsPanel" type="Control" parent="HUD" unique_id=663494843]
+layout_mode = 3
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="ImprovementsHeader" type="Panel" parent="HUD/ImprovementsPanel" unique_id=940470576]
+custom_minimum_size = Vector2(250, 30)
+layout_mode = 0
+offset_left = -106.0
+offset_top = 20.0
+offset_right = 144.0
+offset_bottom = 60.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_264po")
+
+[node name="ImprovementsTitle" type="Label" parent="HUD/ImprovementsPanel/ImprovementsHeader" unique_id=308119743]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Vos améliorations"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ImprovementsList" type="PanelContainer" parent="HUD/ImprovementsPanel" unique_id=1785767987]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 0
+offset_left = -106.0
+offset_top = 60.0
+offset_right = 144.0
+offset_bottom = 100.0
+
+[node name="ImprovementsContent" type="VBoxContainer" parent="HUD/ImprovementsPanel/ImprovementsList" unique_id=1400124687]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 20
 
 [node name="Map" type="Node2D" parent="." unique_id=1434601639]
 position = Vector2(0, 48)

@@ -2,8 +2,8 @@ extends Node2D
 
 # ── Configuration ─────────────────────────────────────────────
 const TILE_SIZE := 128
-const MAP_WIDTH  := 15
-const MAP_HEIGHT := 15
+const MAP_WIDTH  := 30
+const MAP_HEIGHT := 20
 
 # ── Scène de tuile ────────────────────────────────────────────
 @export var tile_scene: PackedScene
@@ -29,9 +29,11 @@ signal tile_hovered(tile)
 const ICON_GRAINE  := preload("res://assets/sprites/graine_cout.png")
 const ICON_FLECHE  := preload("res://assets/sprites/fleche_rendement.png")
 
-const START_X := 6
-const START_Y := 6
+const START_X := 15
+const START_Y := 10
 var ui_hovered: bool = false
+var enemy_hovered: bool = false
+var font := load("res://assets/fonts/W95F.otf")
 
 func _ready() -> void:
 	# ── GridContainer ─────────────────────────────────────────
@@ -48,21 +50,21 @@ func _ready() -> void:
 	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	var stylebox := StyleBoxFlat.new()
-	stylebox.set_content_margin_all(10)
+	stylebox.set_content_margin_all(5)
 	stylebox.bg_color = Color("1a1612")
 	stylebox.border_color = Color("4a3f2f")
-	stylebox.set_border_width_all(1)
+	stylebox.set_border_width_all(2)
 	tooltip.add_theme_stylebox_override("panel", stylebox)
 	tooltip_layer.add_child(tooltip)
 
 	var vbox := VBoxContainer.new()
 	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vbox.add_theme_constant_override("separation", 6)
+	vbox.add_theme_constant_override("separation", 5)
 	tooltip.add_child(vbox)
 
 	var hbox := HBoxContainer.new()
 	hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hbox.add_theme_constant_override("separation", 6)
+	hbox.add_theme_constant_override("separation", -15)
 	vbox.add_child(hbox)
 
 	# 1. Label valeur
@@ -83,17 +85,25 @@ func _ready() -> void:
 	icon2.custom_minimum_size = Vector2(24, 24)
 	icon2.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hbox.add_child(icon2)
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	tooltip_icon2 = icon2
 
 	# Label action en bas
 	var action_label := Label.new()
 	action_label.text = "Cliquer pour infester"
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	action_label.add_theme_font_size_override("font_size", 11)
 	action_label.add_theme_color_override("font_color", Color("8a7d6a"))
 	vbox.add_child(action_label)
+	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	tooltip_action_label = action_label
-
+	
+	tooltip_label.add_theme_font_override("font", font)
+	tooltip_label.add_theme_font_size_override("font_size", 16)
+	action_label.add_theme_font_override("font", font)
+	action_label.add_theme_font_size_override("font_size", 16)
+	tooltip_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	
 	tooltip.hide()
 
 	# ── Génération ────────────────────────────────────────────
@@ -161,25 +171,53 @@ func _handle_hover() -> void:
 		
 
 func _show_tooltip(tile) -> void:
-	if tile.is_infested:
-		tooltip_label.text = "Entre " + str(tile.rendement) + " et " + str(tile.rendement+2)
-		tooltip_label.add_theme_color_override("font_color", Color("4a8a2a"))  # vert
-		tooltip_icon.texture = ICON_GRAINE
-		tooltip_icon2.texture = ICON_FLECHE
-		tooltip_icon2.show()
-		tooltip_action_label.hide()
-	else:
-		tooltip_label.text = "-%d" % tile.get_cout()
-		tooltip_label.add_theme_color_override("font_color", Color("c44040"))  # rouge
-		tooltip_icon.texture = ICON_GRAINE
-		tooltip_icon2.hide()
-		tooltip_action_label.show()
-	_update_tooltip_position()
-	tooltip.show()
+	if !enemy_hovered:
+		if tile.is_infested:
+			tooltip_label.text = "Production : Entre " + str(tile.rendement) + " et " + str(tile.rendement+2)
+			tooltip_label.add_theme_color_override("font_color", Color("4a8a2a"))
+			tooltip_icon.texture = ICON_GRAINE
+			tooltip_icon.show()
+			tooltip_icon2.texture = ICON_FLECHE
+			tooltip_icon2.show()
+			tooltip_action_label.hide()
+		else:
+			tooltip_label.text = "Coût pour acheter la case : -" + str(tile.get_cout())
+			tooltip_label.add_theme_color_override("font_color", Color("c44040"))
+			tooltip_icon.texture = ICON_GRAINE
+			tooltip_icon2.hide()
+			if tile.is_blocked or tile.is_blocked_temp:
+				tooltip_action_label.text = "Cette case est bloquée"
+				tooltip_action_label.add_theme_color_override("font_color", Color("c44040"))
+				tooltip_action_label.show()
+			else:
+				var has_infested_neighbor := false
+				for neighbor in get_neighbors(tile.grid_x, tile.grid_y):
+					if neighbor.is_infested:
+						has_infested_neighbor = true
+						break
+				if not has_infested_neighbor:
+					tooltip_action_label.text = "Il faut déjà posséder une case adjacente"
+					tooltip_action_label.add_theme_color_override("font_color", Color("c44040"))
+					tooltip_action_label.show()
+				elif GameManager.graines < tile.get_cout():
+					tooltip_action_label.text = "Il vous faut plus de graines pour payer cette case"
+					tooltip_action_label.add_theme_color_override("font_color", Color("c44040"))
+					tooltip_action_label.show()
+				else:
+					tooltip_action_label.text = "Cliquer pour vous développer"
+					tooltip_action_label.add_theme_color_override("font_color", Color("8a7d6a"))
+					tooltip_action_label.show()
+		_update_tooltip_position()
+		tooltip.show()
+		tooltip.reset_size()
 
 func _update_tooltip_position() -> void:
 	var mouse_pos := get_viewport().get_mouse_position()
-	tooltip.position = mouse_pos + Vector2(16, 16)
+	var viewport_size := get_viewport().get_visible_rect().size
+	var pos := mouse_pos + Vector2(16, 16)
+	pos.x = clamp(pos.x, 0, viewport_size.x - tooltip.size.x)
+	pos.y = clamp(pos.y, 0, viewport_size.y - tooltip.size.y)
+	tooltip.position = pos
 
 
 # ── Génération ────────────────────────────────────────────────
@@ -267,3 +305,15 @@ func _place_blockers() -> void:
 
 			if not has_blocked_neighbor:
 				grid[x][y].block()
+
+func show_custom_tooltip(text: String) -> void:
+	tooltip_label.text = text
+	tooltip_action_label.hide()
+	tooltip_icon.hide()
+	tooltip_icon2.hide()
+	_update_tooltip_position()
+	tooltip.show()
+	tooltip.reset_size()
+	
+func hide_tooltip() -> void:
+	tooltip.hide()

@@ -31,26 +31,32 @@ const COUT_INFESTION: int = 10
 @onready var shop_popup: Control   = $HUD/ShopPopup
 @onready var shop_overlay: ColorRect = $HUD/ShopPopup/ShopOverlay
 @onready var card_names:  Array    = [
-	$HUD/ShopPopup/ShopContent/Cards/Card1/CardName1,
-	$HUD/ShopPopup/ShopContent/Cards/Card2/CardName2,
-	$HUD/ShopPopup/ShopContent/Cards/Card3/CardName3,
+	$HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1/InfosCard1/CardName1,
+	$HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2/InfosCard2/CardName2,
+	$HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3/InfosCard3/CardName3,
 ]
 @onready var card_descs:  Array    = [
-	$HUD/ShopPopup/ShopContent/Cards/Card1/CardDesc1,
-	$HUD/ShopPopup/ShopContent/Cards/Card2/CardDesc2,
-	$HUD/ShopPopup/ShopContent/Cards/Card3/CardDesc3,
+	$HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1/InfosCard1/CardDesc1,
+	$HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2/InfosCard2/CardDesc2,
+	$HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3/InfosCard3/CardDesc3,
 ]
 @onready var card_costs:  Array    = [
-	$HUD/ShopPopup/ShopContent/Cards/Card1/CardCost1,
-	$HUD/ShopPopup/ShopContent/Cards/Card2/CardCost2,
-	$HUD/ShopPopup/ShopContent/Cards/Card3/CardCost3,
+	$HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1/InfosCard1/HBoxContainer/CardCost1,
+	$HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2/InfosCard2/HBoxContainer/CardCost2,
+	$HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3/InfosCard3/HBoxContainer/CardCost3,
 ]
 @onready var buy_buttons: Array    = [
-	$HUD/ShopPopup/ShopContent/Cards/Card1/BuyBtn1,
-	$HUD/ShopPopup/ShopContent/Cards/Card2/BuyBtn2,
-	$HUD/ShopPopup/ShopContent/Cards/Card3/BuyBtn3,
+	$HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1/BuyBtn1,
+	$HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2/BuyBtn2,
+	$HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3/BuyBtn3,
 ]
 @onready var close_shop_btn: Button = $HUD/ShopPopup/ShopContent/CloseShop
+
+@onready var improvements_panel: Control = $HUD/ImprovementsPanel
+@onready var improvements_list: PanelContainer = $HUD/ImprovementsPanel/ImprovementsList
+@onready var improvements_content: VBoxContainer = $HUD/ImprovementsPanel/ImprovementsList/ImprovementsContent
+@onready var improvements_header: Panel = $HUD/ImprovementsPanel/ImprovementsHeader
+@onready var enemy_control: Control = $HUD/EnemyControl
 
 const MUSIC_NORMAL := preload("uid://crkmrcvp3wnj8")
 const MUSIC_INTENSE := preload("uid://d1d6gtcxttnrg")
@@ -64,12 +70,13 @@ const TURN_BTN_HOVER  := preload("uid://nq6syptfxea3")
 const TURN_BTN_CLICK  := preload("uid://cdx0lfhgvh5h2")
 
 var turn_income_value: int = 0
-var _drag_distance: float = 0.0
-const DRAG_THRESHOLD := 3.0
 
 var _dragging: bool = false
 var _drag_start: Vector2 = Vector2.ZERO
 var _cam_start: Vector2 = Vector2.ZERO
+
+const CAM_ZOOM_MIN := 0.5
+const CAM_ZOOM_MAX := 1
 
 func _ready() -> void:
 	GameManager.set_pause(false)
@@ -100,6 +107,8 @@ func _ready() -> void:
 	btn_cancel_reset.pressed.connect(_cancel_reset)
 	overlay.mouse_entered.connect(func(): map.ui_hovered = true)
 	overlay.mouse_exited.connect(func():  map.ui_hovered = false)
+	enemy_control.mouse_entered.connect(func(): map.enemy_hovered = true)
+	enemy_control.mouse_exited.connect(func():  map.enemy_hovered = false)
 	overlay.mouse_entered.connect(func(): map.ui_hovered = true)
 	btn_confirm.mouse_entered.connect(func(): 
 		map.ui_hovered = true
@@ -113,7 +122,6 @@ func _ready() -> void:
 	btn_cancel.mouse_exited.connect(func(): hovered_button = "")
 	_calculate_turn_income()
 	_dragging = false
-	_drag_distance = 0.0
 	
 	shop_popup.hide()
 	shop_overlay.mouse_entered.connect(func(): map.ui_hovered = true)
@@ -121,6 +129,14 @@ func _ready() -> void:
 	buy_buttons[0].pressed.connect(func(): _buy_card(0))
 	buy_buttons[1].pressed.connect(func(): _buy_card(1))
 	buy_buttons[2].pressed.connect(func(): _buy_card(2))
+	
+	improvements_header.hide()
+	improvements_list.hide()
+	improvements_header.mouse_entered.connect(_on_improvements_entered)
+	improvements_header.mouse_exited.connect(_on_improvements_exited)
+	
+	enemy_control.mouse_entered.connect(_on_enemy_control_entered)
+	enemy_control.mouse_exited.connect(_on_enemy_control_exited)
 	
 func _process(delta: float) -> void:
 	_handle_camera(delta)
@@ -138,6 +154,7 @@ func _setup_camera() -> void:
 	cam.limit_right  = int(map_size.x)
 	cam.limit_bottom = int(map_size.y)
 	cam.offset       = Vector2.ZERO
+	cam.zoom         = Vector2(0.8, 0.8)
 	# Centre sur la tuile de départ
 	cam.position = Vector2(
 		map.START_X * map.TILE_SIZE + map.TILE_SIZE / 2.0,
@@ -190,7 +207,8 @@ func _on_tile_selected(tile) -> void:
 
 func _on_turn_changed(_turn: int) -> void:
 	_process_turn()
-	GameManager.avancement_enemy += 3.0
+	var avancement_gain: int = max(0, 3 * ModifierManager.avancement_multi - ModifierManager.avancement_minus)
+	GameManager.avancement_enemy += avancement_gain
 	
 func _process_turn() -> void:
 	# Débloque les tuiles temporaires
@@ -200,7 +218,7 @@ func _process_turn() -> void:
 			if tile.is_blocked_temp:
 				tile.unblock_temp()
 	
-	GameManager.graines += turn_income_value + randi() % 3
+	GameManager.graines += turn_income_value
 	_process_enemy_attack()
 	_calculate_turn_income()
 	
@@ -214,9 +232,10 @@ func _on_avancement_changed(value: float) -> void:
 	
 func _reset_game() -> void:
 	# Calcule le bonus de graines
+	ModifierManager.reset()
 	var bonus: int = GameManager.graines
-	
 	map.regenerate()
+	improvements_header.hide()
 	
 	# Remet toutes les tuiles à leur état de base
 	for x in map.MAP_WIDTH:
@@ -239,6 +258,7 @@ func _reset_game() -> void:
 	GameManager.graines = bonus
 	GameManager.current_turn = 1
 	AudioManager.crossfade_music(MUSIC_NORMAL)
+	ShopManager.reset_all()
 
 func _on_btn_resets_pressed() -> void:
 	_reset_game()
@@ -352,34 +372,39 @@ func _on_reset_button_exited() -> void:
 	reset_button.frame = 0
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+	# Click droit — drag caméra
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
 		if event.pressed:
 			_dragging = true
-			_drag_distance = 0.0
 			_drag_start = get_viewport().get_mouse_position()
 			_cam_start = cam.position
 		else:
 			_dragging = false
-			# C'est un clic seulement si on n'a pas trop bougé
-			if _drag_distance < DRAG_THRESHOLD:
-				match hovered_button:
-					"next_turn":
-						GameManager.next_turn()
-						_animate_turn_button_click()
-					"reset": _open_popup_reset()
-					"confirm": _confirm_reset()
-					"cancel":  _cancel_reset()
 	
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			_zoom(0.1)
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			_zoom(-0.1)
+		
+	# Click gauche — boutons
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
+		match hovered_button:
+			"next_turn":
+				GameManager.next_turn()
+				_animate_turn_button_click()
+			"reset": _open_popup_reset()
+			"confirm": _confirm_reset()
+			"cancel":  _cancel_reset()
+
+	# Mouvement souris — drag
 	if event is InputEventMouseMotion and _dragging:
 		var delta := get_viewport().get_mouse_position() - _drag_start
-		_drag_distance = delta.length()
 		var new_pos := _cam_start - delta / cam.zoom.x
-		# Clamp dans les limites de la carte
 		var half_w := get_viewport().get_visible_rect().size.x / 2.0 / cam.zoom.x
 		var half_h := get_viewport().get_visible_rect().size.y / 2.0 / cam.zoom.y
 		cam.position.x = clamp(new_pos.x, cam.limit_left + half_w, cam.limit_right - half_w)
 		cam.position.y = clamp(new_pos.y, cam.limit_top + half_h, cam.limit_bottom - half_h)
-
 func _update_enemy_marker(value: float) -> void:
 	var track_width: float = progress_track.size.x
 	var marker_width: float = enemy_marker.size.x
@@ -400,8 +425,7 @@ func _confirm_reset() -> void:
 	hovered_button = ""
 	_reset_game()
 	_calculate_turn_income()
-	#_open_shop()
-	_close_shop()
+	_open_shop()
 
 func _cancel_reset() -> void:
 	popup_reset_control.hide()
@@ -423,7 +447,7 @@ func _calculate_turn_income() -> void:
 		for y in map.MAP_HEIGHT:
 			var tile = map.get_tile(x, y)
 			if tile.is_infested:
-				turn_income_value += tile.rendement + randi() % 3
+				turn_income_value += tile.rendement + randi() % 3 + ModifierManager.rendement_bonus
 	turn_income.text = "+" + str(turn_income_value)
 
 func _update_music(value: float) -> void:
@@ -457,23 +481,84 @@ func _open_shop() -> void:
 	shop_popup.show()
 	map.ui_hovered = true
 
-
 func _refresh_shop() -> void:
 	for i in 3:
 		var card = ShopManager.available_cards[i]
-		card_names[i].text  = card.name
-		card_descs[i].text  = card.description
-		card_costs[i].text  = str(card.cost) + " graines"
-		# Grise le bouton si pas assez de graines
-		buy_buttons[i].disabled = GameManager.graines < card.cost
-
+		if card == null:
+			card_names[i].text = "—"
+			card_descs[i].text = ""
+			card_costs[i].text = ""
+			buy_buttons[i].disabled = true
+			continue
+		var real_cost: int = card.cost + ShopManager.cost_increase
+		card_names[i].text = "[u]" + card.name + "[/u]"
+		card_descs[i].text = card.description
+		card_costs[i].text = "Cout de l'amélioration : -" + str(real_cost)
+		buy_buttons[i].disabled = GameManager.graines < real_cost
 
 func _buy_card(index: int) -> void:
 	var card = ShopManager.available_cards[index]
-	if ShopManager.buy_card(card):
-		_refresh_shop()  # met à jour les boutons après achat
-
+	if card == null:
+		return
+	if ShopManager.buy_card(card, index):
+		_recalculate_all_rendements()
+		_refresh_shop()
+		improvements_header.show() 
 
 func _close_shop() -> void:
+	ShopManager.reset_shop()
 	shop_popup.hide()
 	map.ui_hovered = false
+	GameManager.graines = 50 + ModifierManager.graines_bonus
+
+func _recalculate_all_rendements() -> void:
+	for x in map.MAP_WIDTH:
+		for y in map.MAP_HEIGHT:
+			map.get_tile(x, y).calculate_rendement()
+	_calculate_turn_income()
+
+func _zoom(delta: float) -> void:
+	var new_zoom: float = clamp(cam.zoom.x + delta, CAM_ZOOM_MIN, CAM_ZOOM_MAX)
+	var tween: Tween = create_tween()
+	tween.tween_property(cam, "zoom", Vector2(new_zoom, new_zoom), 0.1)
+
+func _on_improvements_entered() -> void:
+	map.ui_hovered = true
+	_refresh_improvements()
+	improvements_list.show()
+
+func _on_improvements_exited() -> void:
+	map.ui_hovered = false
+	improvements_list.hide()
+
+func _refresh_improvements() -> void:
+	# Vide le contenu
+	for child in improvements_content.get_children():
+		child.queue_free()
+
+	if ShopManager.purchased_cards.is_empty():
+		var label := Label.new()
+		label.text = "Aucune amélioration"
+		improvements_content.add_child(label)
+		return
+
+	# Compte les occurrences de chaque carte
+	var counts := {}
+	for card_id in ShopManager.purchased_cards:
+		counts[card_id] = counts.get(card_id, 0) + 1
+
+	for card_id in counts:
+		var label := Label.new()
+		var count: int = counts[card_id]
+		var card_name: String = ShopManager.get_card_name(card_id)
+		label.text = card_name + (" x%d" % count if count > 1 else "")
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		improvements_content.add_child(label)
+
+func _on_enemy_control_entered() -> void:
+	#map.ui_hovered = true
+	map.show_custom_tooltip("L'avancement ennemi augmente de %d%% par tour" % int(3 * ModifierManager.avancement_multi - ModifierManager.avancement_minus) + "\n Tous les 10% d'avancement le cout des tuiles et le risque d'évenement négatif augmente")
+
+func _on_enemy_control_exited() -> void:
+	#map.ui_hovered = false
+	map.hide_tooltip()

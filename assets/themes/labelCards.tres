@@ -1,0 +1,7 @@
+[gd_resource type="Theme" format=3 uid="uid://k7vpnxwgy1o6"]
+
+[ext_resource type="FontFile" uid="uid://fi2wiv07digh" path="res://assets/fonts/W95F.otf" id="1_hqjgr"]
+
+[resource]
+default_font = ExtResource("1_hqjgr")
+default_font_size = 18

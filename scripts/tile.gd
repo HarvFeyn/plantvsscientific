@@ -23,8 +23,7 @@ var is_blocked_temp: bool = false
 
 const CADRE_SPRITE := preload("res://assets/sprites/cadre_all.png")
 const INFESTATION_SPRITE := preload("res://assets/sprites/orobanche.png")
-const COUT_BASE    := 50
-const COUT_PAR_PAS := 60
+const COUT_BASE    := 25
 
 const TERRE_SPRITES := [
 	preload("res://assets/sprites/limon.png"),
@@ -114,8 +113,8 @@ func disinfest() -> void:
 func get_cout() -> int:
 	if is_infested or is_blocked or is_blocked_temp:
 		return 0
-	var avancement_multi: float = 1.0 + (GameManager.avancement_enemy / 10)
-	return int(ceil(COUT_BASE * avancement_multi))
+	var avancement_multi: float = 2.0 + (GameManager.avancement_enemy / 10)
+	return int(ceil(COUT_BASE * ModifierManager.cout_multi * avancement_multi))
 	
 #func get_cout() -> int:
 	#if is_infested or is_blocked or is_blocked_temp:
@@ -126,9 +125,9 @@ func get_cout() -> int:
 func calculate_rendement() -> void:
 	var multi_terre = 1
 	match terre:
-		TerreType.ARGILE: multi_terre = 1.5
-		TerreType.LIMON: multi_terre = 1
-		TerreType.TERRE_DE_GROIE: multi_terre = 2
+		TerreType.ARGILE: multi_terre = 1.25 * ModifierManager.multi_argile
+		TerreType.LIMON: multi_terre = 1 * ModifierManager.multi_limon
+		TerreType.TERRE_DE_GROIE: multi_terre = 1.5 * ModifierManager.multi_terre_groie
 	rendement = ceil((colzas - eau + 2) * 2 * multi_terre)
 
 func block() -> void:

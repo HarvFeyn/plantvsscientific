@@ -1,0 +1,557 @@
+[gd_scene format=3 uid="uid://b8n3wuqkjbyri"]
+
+[ext_resource type="Script" uid="uid://bwpyh8uvfkxmp" path="res://scripts/game.gd" id="1_uwrxv"]
+[ext_resource type="Texture2D" uid="uid://d36v0d4jchvup" path="res://assets/sprites/UI_TOP_BOTTOM.png" id="2_iywne"]
+[ext_resource type="Texture2D" uid="uid://cqng70keu8fc2" path="res://assets/sprites/bottom_left_hud.png" id="2_lbhrr"]
+[ext_resource type="Script" uid="uid://d5f4yo24k2p5" path="res://scripts/map.gd" id="2_lnu2h"]
+[ext_resource type="PackedScene" uid="uid://cyoq0bv6qtrke" path="res://scenes/tile.tscn" id="3_lbhrr"]
+[ext_resource type="FontFile" uid="uid://fi2wiv07digh" path="res://assets/fonts/W95F.otf" id="4_ir15t"]
+[ext_resource type="Texture2D" uid="uid://di60ahxy0chei" path="res://assets/sprites/ui_ressource_graine.png" id="4_p57ef"]
+[ext_resource type="Texture2D" uid="uid://cfo8fr7i7p76t" path="res://assets/sprites/water_circle.png" id="5_u5sy4"]
+[ext_resource type="Texture2D" uid="uid://cr18115lapy3f" path="res://assets/sprites/empty_circle.png" id="6_0tnpc"]
+[ext_resource type="Texture2D" uid="uid://cen4ss4gsehbq" path="res://assets/sprites/colza_circle.png" id="6_gee14"]
+[ext_resource type="Texture2D" uid="uid://xldyiccvygfc" path="res://assets/sprites/button_turn.png" id="8_vtaks"]
+[ext_resource type="Texture2D" uid="uid://dodrc3qs5gga" path="res://assets/sprites/os_anim.png" id="9_kvpfn"]
+[ext_resource type="Texture2D" uid="uid://b1iyp463moese" path="res://assets/sprites/Enemy.png" id="10_ir15t"]
+[ext_resource type="Texture2D" uid="uid://6em6uj7kxbij" path="res://assets/sprites/flint.png" id="11_kvuet"]
+[ext_resource type="Texture2D" uid="uid://cl12yei548d0o" path="res://assets/sprites/popup_reset.png" id="12_trtic"]
+[ext_resource type="Texture2D" uid="uid://btav4p4hwr11i" path="res://assets/sprites/fire3.png" id="14_ca42v"]
+[ext_resource type="StyleBox" uid="uid://bdrt76g6m0m65" path="res://assets/themes/cardOverlay.tres" id="15_rysoc"]
+[ext_resource type="Theme" uid="uid://k7vpnxwgy1o6" path="res://assets/themes/labelCards.tres" id="16_ssvqc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dinhu"]
+atlas = ExtResource("9_kvpfn")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kvuet"]
+atlas = ExtResource("9_kvpfn")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_trtic"]
+atlas = ExtResource("9_kvpfn")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ir15t"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dinhu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kvuet")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_trtic")
+}],
+"loop": true,
+"name": &"hover",
+"speed": 3.0
+}]
+
+[node name="game" type="Node2D" unique_id=133573637]
+script = ExtResource("1_uwrxv")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1081735239]
+layer = 2
+
+[node name="TopBar" type="Panel" parent="HUD" unique_id=1793633193]
+custom_minimum_size = Vector2(0, 48)
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+
+[node name="BottomBar" type="TextureRect" parent="HUD" unique_id=2008127624]
+visibility_layer = 17
+custom_minimum_size = Vector2(0, 48)
+offset_right = 384.0
+offset_bottom = 260.0
+scale = Vector2(3, 3)
+mouse_filter = 0
+texture = ExtResource("2_iywne")
+
+[node name="DisplayInfoTuile" type="Control" parent="HUD" unique_id=751263286]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BottomLeftHud" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=552863142]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 594.0
+offset_right = 242.0
+offset_bottom = 719.0
+grow_vertical = 0
+mouse_filter = 0
+texture = ExtResource("2_lbhrr")
+
+[node name="TerreType" type="Label" parent="HUD/DisplayInfoTuile" unique_id=425625573]
+layout_mode = 0
+offset_left = 82.0
+offset_top = 648.0
+offset_right = 143.0
+offset_bottom = 679.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25882354)
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 20
+
+[node name="CircleWater1" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=2073692368]
+layout_mode = 0
+offset_left = 74.00001
+offset_top = 713.0
+offset_right = 114.00001
+offset_bottom = 753.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("5_u5sy4")
+
+[node name="CircleWater2" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=904963245]
+layout_mode = 0
+offset_left = 113.00001
+offset_top = 713.0
+offset_right = 153.0
+offset_bottom = 753.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("6_0tnpc")
+
+[node name="CircleWater3" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=1654377516]
+layout_mode = 0
+offset_left = 151.0
+offset_top = 713.0
+offset_right = 191.0
+offset_bottom = 753.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("6_0tnpc")
+
+[node name="CircleColza1" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=1061381913]
+layout_mode = 0
+offset_left = 74.00001
+offset_top = 678.0
+offset_right = 114.00001
+offset_bottom = 718.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("6_gee14")
+
+[node name="CircleColza2" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=1045745528]
+layout_mode = 0
+offset_left = 113.00001
+offset_top = 678.0
+offset_right = 153.0
+offset_bottom = 718.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("6_0tnpc")
+
+[node name="CircleColza3" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=1000984572]
+layout_mode = 0
+offset_left = 151.0
+offset_top = 678.0
+offset_right = 191.0
+offset_bottom = 718.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("6_0tnpc")
+
+[node name="EnemyControl" type="Control" parent="HUD" unique_id=626475114]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Enemy" type="TextureRect" parent="HUD/EnemyControl" unique_id=1252545437]
+layout_mode = 0
+offset_left = 189.0
+offset_top = 575.0
+offset_right = 489.0
+offset_bottom = 675.0
+scale = Vector2(2, 2)
+texture = ExtResource("10_ir15t")
+
+[node name="PercentEnemy" type="Label" parent="HUD/EnemyControl" unique_id=1361793833]
+layout_mode = 0
+offset_left = 705.0
+offset_top = 714.0
+offset_right = 757.0
+offset_bottom = 750.0
+theme_override_colors/font_color = Color(0.7882353, 0.16862746, 0.14509805, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.59607846)
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 26
+text = "0%"
+
+[node name="ProgressTrack" type="Control" parent="HUD/EnemyControl" unique_id=1892313640]
+anchors_preset = 0
+offset_left = 410.0
+offset_top = 749.0
+offset_right = 780.0
+offset_bottom = 771.0
+
+[node name="EnemyMarker" type="TextureRect" parent="HUD/EnemyControl/ProgressTrack" unique_id=297557034]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -0.99999994
+offset_top = -19.0
+offset_right = 39.0
+offset_bottom = 21.0
+grow_vertical = 2
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("11_kvuet")
+
+[node name="fire" type="Sprite2D" parent="HUD" unique_id=1671694371]
+position = Vector2(813, 735)
+texture = ExtResource("14_ca42v")
+
+[node name="TurnControl" type="Control" parent="HUD" unique_id=50924530]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TurnButton" type="TextureRect" parent="HUD/TurnControl" unique_id=1063608715]
+layout_mode = 0
+offset_left = 912.0
+offset_top = 673.0
+offset_right = 1122.0
+offset_bottom = 743.0
+mouse_default_cursor_shape = 2
+texture = ExtResource("8_vtaks")
+
+[node name="TurnIcome" type="Label" parent="HUD/TurnControl" unique_id=2006961691]
+layout_mode = 0
+offset_left = 1019.0
+offset_top = 716.0
+offset_right = 1059.0
+offset_bottom = 744.0
+theme_override_colors/font_color = Color(0.5842228, 0.9767125, 0.4663415, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.13725491)
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
+text = "+5"
+
+[node name="PopupReset" type="Control" parent="HUD" unique_id=1913288018]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+
+[node name="Overlay" type="ColorRect" parent="HUD/PopupReset" unique_id=1455400857]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.88235295)
+
+[node name="PopupReset" type="TextureRect" parent="HUD/PopupReset" unique_id=1435591675]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -192.0
+offset_top = -128.0
+offset_right = 192.0
+offset_bottom = 128.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+texture = ExtResource("12_trtic")
+
+[node name="BtnConfirm" type="Button" parent="HUD/PopupReset" unique_id=1550276865]
+layout_mode = 0
+offset_left = 600.0
+offset_top = 549.0
+offset_right = 663.0
+offset_bottom = 589.0
+text = "Hiberner"
+
+[node name="BtnCancel" type="Button" parent="HUD/PopupReset" unique_id=1996258017]
+layout_mode = 0
+offset_left = 481.0
+offset_top = 546.0
+offset_right = 551.0
+offset_bottom = 586.0
+text = "Annuler"
+
+[node name="ResetButtonArea" type="Control" parent="HUD" unique_id=53388949]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 904.0
+offset_top = -1.0
+offset_right = 1151.0
+offset_bottom = 106.0
+mouse_default_cursor_shape = 2
+
+[node name="ResetButton" type="AnimatedSprite2D" parent="HUD/ResetButtonArea" unique_id=1684890427]
+position = Vector2(165, 82)
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_ir15t")
+animation = &"hover"
+frame_progress = 0.38660392
+
+[node name="ShopPopup" type="Control" parent="HUD" unique_id=833680920]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ShopOverlay" type="ColorRect" parent="HUD/ShopPopup" unique_id=210140266]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.88235295)
+
+[node name="ShopContent" type="VBoxContainer" parent="HUD/ShopPopup" unique_id=2068670356]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -22.0
+offset_top = -58.0
+offset_right = 22.0
+offset_bottom = 58.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 80
+
+[node name="PanelTitle" type="PanelContainer" parent="HUD/ShopPopup/ShopContent" unique_id=1591873442]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("15_rysoc")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD/ShopPopup/ShopContent/PanelTitle" unique_id=2126886447]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ShopTitle" type="Label" parent="HUD/ShopPopup/ShopContent/PanelTitle/MarginContainer" unique_id=613786482]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.26824662, 0.00079432584, 2.2862106e-07, 1)
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
+text = "Acheter des améliorations.
+Valable Seulement jusqu'à votre prochaine hibernation"
+horizontal_alignment = 1
+
+[node name="Cards" type="HBoxContainer" parent="HUD/ShopPopup/ShopContent" unique_id=1681174930]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 50
+
+[node name="PanelCard1" type="PanelContainer" parent="HUD/ShopPopup/ShopContent/Cards" unique_id=1547274955]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("15_rysoc")
+
+[node name="MarginCard1" type="MarginContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1" unique_id=669594856]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 50
+
+[node name="Card1" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1" unique_id=1988210468]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 50
+
+[node name="InfosCard1" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1" unique_id=1865402312]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="CardName1" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1/InfosCard1" unique_id=1934948747]
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+horizontal_alignment = 1
+
+[node name="CardDesc1" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1/InfosCard1" unique_id=1162437303]
+custom_minimum_size = Vector2(275, 0)
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+autowrap_mode = 2
+
+[node name="CardCost1" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1/InfosCard1" unique_id=560116922]
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+horizontal_alignment = 1
+
+[node name="BuyBtn1" type="Button" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1" unique_id=313375650]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
+text = "Acheter"
+
+[node name="PanelCard2" type="PanelContainer" parent="HUD/ShopPopup/ShopContent/Cards" unique_id=921185750]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("15_rysoc")
+
+[node name="MarginCard2" type="MarginContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2" unique_id=225256059]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 50
+
+[node name="Card2" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2" unique_id=1466627033]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 50
+
+[node name="InfosCard2" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2" unique_id=349138384]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="CardName2" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2/InfosCard2" unique_id=1837283310]
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+horizontal_alignment = 1
+
+[node name="CardDesc2" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2/InfosCard2" unique_id=1312970402]
+custom_minimum_size = Vector2(275, 0)
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+autowrap_mode = 2
+
+[node name="CardCost2" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2/InfosCard2" unique_id=768955765]
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+horizontal_alignment = 1
+
+[node name="BuyBtn2" type="Button" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard2/MarginCard2/Card2" unique_id=1908920243]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
+text = "Acheter"
+
+[node name="PanelCard3" type="PanelContainer" parent="HUD/ShopPopup/ShopContent/Cards" unique_id=145927286]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("15_rysoc")
+
+[node name="MarginCard3" type="MarginContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3" unique_id=1208819488]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 50
+
+[node name="Card3" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3" unique_id=956911432]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 50
+
+[node name="InfosCard3" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3" unique_id=1486733026]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="CardName3" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3/InfosCard3" unique_id=759417814]
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+horizontal_alignment = 1
+
+[node name="CardDesc3" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3/InfosCard3" unique_id=1836381025]
+custom_minimum_size = Vector2(275, 0)
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+autowrap_mode = 2
+
+[node name="CardCost3" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3/InfosCard3" unique_id=343537985]
+layout_mode = 2
+theme = ExtResource("16_ssvqc")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.09803922)
+theme_override_fonts/font = ExtResource("4_ir15t")
+horizontal_alignment = 1
+
+[node name="BuyBtn3" type="Button" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3" unique_id=1234462011]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
+text = "Acheter"
+
+[node name="CloseShop" type="Button" parent="HUD/ShopPopup/ShopContent" unique_id=171195528]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
+text = "Sortir d'hibernation"
+
+[node name="GrainesDisplay" type="Control" parent="HUD" unique_id=1012731130]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TopLeftHud" type="TextureRect" parent="HUD/GrainesDisplay" unique_id=804445680]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 21.0
+offset_right = 222.0
+offset_bottom = 85.0
+texture = ExtResource("4_p57ef")
+
+[node name="Label" type="Label" parent="HUD/GrainesDisplay" unique_id=2140855265]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 59.0
+offset_top = 15.0
+offset_right = 84.0
+offset_bottom = 46.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
+text = "50"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Map" type="Node2D" parent="." unique_id=1434601639]
+position = Vector2(0, 48)
+script = ExtResource("2_lnu2h")
+tile_scene = ExtResource("3_lbhrr")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=2008711142]

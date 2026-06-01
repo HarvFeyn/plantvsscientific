@@ -1,10 +1,25 @@
 extends Node
 
-# ── Multiplicateurs ───────────────────────────────────────────
-var rendement_multi:   float = 1.0  # multiplie le rendement de toutes les tuiles
-var cout_multi:        float = 1.0  # multiplie le cout d'infestation
-var avancement_multi:  float = 1.0  # multiplie l'avancement ennemi par tour
+var rendement_multi:   float
+var cout_multi:        float
+var avancement_multi:  float
+var rendement_bonus:   int
+var graines_bonus:     int
+var avancement_minus:  int
+var multi_argile:      float
+var multi_limon:       float
+var multi_terre_groie: float
 
-# ── Bonus additifs ────────────────────────────────────────────
-var rendement_bonus:   int = 0
-var graines_bonus:     int = 0
+func _ready() -> void:
+	reset()
+
+func reset() -> void:
+	rendement_multi  = 1.0
+	cout_multi       = 1.0
+	avancement_multi = 1.0
+	rendement_bonus  = 0
+	graines_bonus    = 0
+	avancement_minus = 0
+	multi_argile      = 1.0
+	multi_limon       = 1.0
+	multi_terre_groie = 1.0
