@@ -28,6 +28,30 @@ const COUT_INFESTION: int = 10
 @onready var btn_cancel_reset:  Button = $HUD/PopupReset/BtnCancel
 @onready var overlay: ColorRect = $HUD/PopupReset/Overlay
 
+@onready var shop_popup: Control   = $HUD/ShopPopup
+@onready var shop_overlay: ColorRect = $HUD/ShopPopup/ShopOverlay
+@onready var card_names:  Array    = [
+	$HUD/ShopPopup/ShopContent/Cards/Card1/CardName1,
+	$HUD/ShopPopup/ShopContent/Cards/Card2/CardName2,
+	$HUD/ShopPopup/ShopContent/Cards/Card3/CardName3,
+]
+@onready var card_descs:  Array    = [
+	$HUD/ShopPopup/ShopContent/Cards/Card1/CardDesc1,
+	$HUD/ShopPopup/ShopContent/Cards/Card2/CardDesc2,
+	$HUD/ShopPopup/ShopContent/Cards/Card3/CardDesc3,
+]
+@onready var card_costs:  Array    = [
+	$HUD/ShopPopup/ShopContent/Cards/Card1/CardCost1,
+	$HUD/ShopPopup/ShopContent/Cards/Card2/CardCost2,
+	$HUD/ShopPopup/ShopContent/Cards/Card3/CardCost3,
+]
+@onready var buy_buttons: Array    = [
+	$HUD/ShopPopup/ShopContent/Cards/Card1/BuyBtn1,
+	$HUD/ShopPopup/ShopContent/Cards/Card2/BuyBtn2,
+	$HUD/ShopPopup/ShopContent/Cards/Card3/BuyBtn3,
+]
+@onready var close_shop_btn: Button = $HUD/ShopPopup/ShopContent/CloseShop
+
 const MUSIC_NORMAL := preload("uid://crkmrcvp3wnj8")
 const MUSIC_INTENSE := preload("uid://d1d6gtcxttnrg")
 
@@ -40,6 +64,12 @@ const TURN_BTN_HOVER  := preload("uid://nq6syptfxea3")
 const TURN_BTN_CLICK  := preload("uid://cdx0lfhgvh5h2")
 
 var turn_income_value: int = 0
+var _drag_distance: float = 0.0
+const DRAG_THRESHOLD := 3.0
+
+var _dragging: bool = false
+var _drag_start: Vector2 = Vector2.ZERO
+var _cam_start: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	GameManager.set_pause(false)
@@ -82,6 +112,15 @@ func _ready() -> void:
 	btn_confirm.mouse_exited.connect(func(): hovered_button = "")
 	btn_cancel.mouse_exited.connect(func(): hovered_button = "")
 	_calculate_turn_income()
+	_dragging = false
+	_drag_distance = 0.0
+	
+	shop_popup.hide()
+	shop_overlay.mouse_entered.connect(func(): map.ui_hovered = true)
+	close_shop_btn.pressed.connect(_close_shop)
+	buy_buttons[0].pressed.connect(func(): _buy_card(0))
+	buy_buttons[1].pressed.connect(func(): _buy_card(1))
+	buy_buttons[2].pressed.connect(func(): _buy_card(2))
 	
 func _process(delta: float) -> void:
 	_handle_camera(delta)
@@ -98,8 +137,12 @@ func _setup_camera() -> void:
 	cam.limit_top    = 0
 	cam.limit_right  = int(map_size.x)
 	cam.limit_bottom = int(map_size.y)
-	cam.position     = Vector2(0, 0)
 	cam.offset       = Vector2.ZERO
+	# Centre sur la tuile de départ
+	cam.position = Vector2(
+		map.START_X * map.TILE_SIZE + map.TILE_SIZE / 2.0,
+		map.START_Y * map.TILE_SIZE + map.TILE_SIZE / 2.0
+	)
 
 func _handle_camera(delta: float) -> void:
 	var dir := Vector2.ZERO
@@ -147,7 +190,7 @@ func _on_tile_selected(tile) -> void:
 
 func _on_turn_changed(_turn: int) -> void:
 	_process_turn()
-	GameManager.avancement_enemy += 2.0
+	GameManager.avancement_enemy += 3.0
 	
 func _process_turn() -> void:
 	# Débloque les tuiles temporaires
@@ -168,7 +211,7 @@ func _on_avancement_changed(value: float) -> void:
 	percent_enemy.text = "%.0f%%" % value
 	_update_enemy_marker(value)
 	_update_music(value)
-
+	
 func _reset_game() -> void:
 	# Calcule le bonus de graines
 	var bonus: int = GameManager.graines
@@ -185,6 +228,11 @@ func _reset_game() -> void:
 	# Remet la case (0,0) infestée
 	var start_tile = map.get_tile(map.START_X, map.START_Y)
 	start_tile.infest()
+	
+	cam.position = Vector2(
+		map.START_X * map.TILE_SIZE + map.TILE_SIZE / 2.0,
+		map.START_Y * map.TILE_SIZE + map.TILE_SIZE / 2.0
+	)
 	
 	# Réinitialise les variables globales
 	GameManager.avancement_enemy = 0.0
@@ -276,7 +324,11 @@ func _on_tile_hovered(tile) -> void:
 		2: 
 			circle_colza_2.texture = preload("uid://cen4ss4gsehbq")
 			circle_colza_3.texture = preload("uid://cen4ss4gsehbq")
-
+	if tile != null:
+			if can_infest(tile):
+				tile.highlight.color = Color(0.80, 0, 0.80, 0.50)  # violet
+			else:
+				tile.highlight.color = Color(1, 1, 1, 0.4)
 func _on_turn_button_entered() -> void:
 	turn_button.texture = TURN_BTN_HOVER
 	map.ui_hovered = true
@@ -300,14 +352,33 @@ func _on_reset_button_exited() -> void:
 	reset_button.frame = 0
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		match hovered_button:
-			"next_turn":
-				GameManager.next_turn()
-				_animate_turn_button_click()
-			"reset": _open_popup_reset()
-			"confirm": _confirm_reset()
-			"cancel":  _cancel_reset()
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			_dragging = true
+			_drag_distance = 0.0
+			_drag_start = get_viewport().get_mouse_position()
+			_cam_start = cam.position
+		else:
+			_dragging = false
+			# C'est un clic seulement si on n'a pas trop bougé
+			if _drag_distance < DRAG_THRESHOLD:
+				match hovered_button:
+					"next_turn":
+						GameManager.next_turn()
+						_animate_turn_button_click()
+					"reset": _open_popup_reset()
+					"confirm": _confirm_reset()
+					"cancel":  _cancel_reset()
+	
+	if event is InputEventMouseMotion and _dragging:
+		var delta := get_viewport().get_mouse_position() - _drag_start
+		_drag_distance = delta.length()
+		var new_pos := _cam_start - delta / cam.zoom.x
+		# Clamp dans les limites de la carte
+		var half_w := get_viewport().get_visible_rect().size.x / 2.0 / cam.zoom.x
+		var half_h := get_viewport().get_visible_rect().size.y / 2.0 / cam.zoom.y
+		cam.position.x = clamp(new_pos.x, cam.limit_left + half_w, cam.limit_right - half_w)
+		cam.position.y = clamp(new_pos.y, cam.limit_top + half_h, cam.limit_bottom - half_h)
 
 func _update_enemy_marker(value: float) -> void:
 	var track_width: float = progress_track.size.x
@@ -329,6 +400,8 @@ func _confirm_reset() -> void:
 	hovered_button = ""
 	_reset_game()
 	_calculate_turn_income()
+	#_open_shop()
+	_close_shop()
 
 func _cancel_reset() -> void:
 	popup_reset_control.hide()
@@ -360,3 +433,47 @@ func _update_music(value: float) -> void:
 	elif value < 50.0 and _music_intense_playing:
 		_music_intense_playing = false
 		AudioManager.crossfade_music(MUSIC_NORMAL)
+
+func can_infest(tile) -> bool:
+	if tile == null:
+		return false
+	if tile.is_infested or tile.is_blocked or tile.is_blocked_temp:
+		return false
+	var neighbors: Array = map.get_neighbors(tile.grid_x, tile.grid_y)
+	var has_infested_neighbor := false
+	for neighbor in neighbors:
+		if neighbor.is_infested:
+			has_infested_neighbor = true
+			break
+	if not has_infested_neighbor:
+		return false
+	if GameManager.graines < tile.get_cout():
+		return false
+	return true
+
+func _open_shop() -> void:
+	ShopManager.pick_random_cards()
+	_refresh_shop()
+	shop_popup.show()
+	map.ui_hovered = true
+
+
+func _refresh_shop() -> void:
+	for i in 3:
+		var card = ShopManager.available_cards[i]
+		card_names[i].text  = card.name
+		card_descs[i].text  = card.description
+		card_costs[i].text  = str(card.cost) + " graines"
+		# Grise le bouton si pas assez de graines
+		buy_buttons[i].disabled = GameManager.graines < card.cost
+
+
+func _buy_card(index: int) -> void:
+	var card = ShopManager.available_cards[index]
+	if ShopManager.buy_card(card):
+		_refresh_shop()  # met à jour les boutons après achat
+
+
+func _close_shop() -> void:
+	shop_popup.hide()
+	map.ui_hovered = false

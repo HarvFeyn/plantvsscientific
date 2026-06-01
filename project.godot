@@ -13,7 +13,7 @@ config_version=5
 config/name="PlantVsScientifique"
 run/main_scene="uid://dcj8i1iuuxwol"
 config/features=PackedStringArray("4.6", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="uid://vihvwtp4c8y7"
 
 [audio]
 
@@ -25,6 +25,8 @@ SceneManager="*uid://ufgyaq2h5pbi"
 GameManager="*uid://co2fpkc3y66aq"
 AudioManager="*uid://np14knf0vqfe"
 UiThemes="*uid://bwk1m7istcpn1"
+ModifierManager="*uid://2aoijgo3iyn1"
+ShopManager="*uid://c1pvkk1tt6kgg"
 
 [display]
 

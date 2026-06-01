@@ -1,0 +1,4 @@
+res://scenes/game.tscn
+res://autoloads/AudioManager.gd
+res://default_bus_layout.tres
+res://scripts/game.gd

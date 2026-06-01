@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/Danger-cromagnon.ogg-af090efb442aaa43f67ea07a
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

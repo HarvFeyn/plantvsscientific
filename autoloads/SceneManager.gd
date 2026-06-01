@@ -2,7 +2,7 @@ extends Node
 
 signal scene_changed(scene_name: String)
 
-const FADE_DURATION := 0.2
+const FADE_DURATION := 0.4
 
 var _transition: CanvasLayer = null
 var _color_rect: ColorRect = null
@@ -36,7 +36,12 @@ func _ready() -> void:
 	_transition.add_child(_rideau_bas)
 	_rideau_haut.scale = Vector2(3, 3)
 	_rideau_bas.scale = Vector2(3, 3)
-	
+	_color_rect = ColorRect.new()
+	_color_rect.color = Color.BLACK
+	_color_rect.size = get_viewport().get_visible_rect().size
+	_color_rect.modulate.a = 0.0
+	_color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_transition.add_child(_color_rect)
 
 func go_to(path: String) -> void:
 	if _is_transitioning:
@@ -56,22 +61,25 @@ func go_to(path: String) -> void:
 func _fade_in() -> void:
 	var viewport_size := get_viewport().get_visible_rect().size
 	var tween := get_tree().create_tween().set_parallel()
-	# Rideau haut descend vers 0
 	tween.tween_property(_rideau_haut, "position:y", 0.0, FADE_DURATION)\
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	# Rideau bas monte vers le centre
-	tween.tween_property(_rideau_bas, "position:y", viewport_size.y / 2.0, FADE_DURATION)\
+	tween.tween_property(_rideau_bas, "position:y", viewport_size.y / 10.0, FADE_DURATION)\
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	# Démarre lentement et accélère vers la fin
+	tween.tween_property(_color_rect, "modulate:a", 0.7, FADE_DURATION)\
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
 	await tween.finished
+
 
 func _fade_out() -> void:
 	await get_tree().create_timer(0.05).timeout
 	var viewport_size := get_viewport().get_visible_rect().size
 	var tween := get_tree().create_tween().set_parallel()
-	# Rideau haut remonte
 	tween.tween_property(_rideau_haut, "position:y", -viewport_size.y, FADE_DURATION)\
 		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
-	# Rideau bas redescend
 	tween.tween_property(_rideau_bas, "position:y", viewport_size.y, FADE_DURATION)\
 		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	# Commence fort et ralentit vers la fin — miroir du fade in
+	tween.tween_property(_color_rect, "modulate:a", 0.0, FADE_DURATION)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	await tween.finished

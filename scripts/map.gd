@@ -2,8 +2,8 @@ extends Node2D
 
 # ── Configuration ─────────────────────────────────────────────
 const TILE_SIZE := 128
-const MAP_WIDTH  := 40
-const MAP_HEIGHT := 40
+const MAP_WIDTH  := 15
+const MAP_HEIGHT := 15
 
 # ── Scène de tuile ────────────────────────────────────────────
 @export var tile_scene: PackedScene
@@ -29,8 +29,8 @@ signal tile_hovered(tile)
 const ICON_GRAINE  := preload("res://assets/sprites/graine_cout.png")
 const ICON_FLECHE  := preload("res://assets/sprites/fleche_rendement.png")
 
-const START_X := 4
-const START_Y := 2
+const START_X := 6
+const START_Y := 6
 var ui_hovered: bool = false
 
 func _ready() -> void:
@@ -152,7 +152,6 @@ func _handle_hover() -> void:
 	hovered_tile = tile
 
 	if hovered_tile != null:
-		hovered_tile.highlight.color = Color(0.80, 0, 0.80, 0.50)
 		hovered_tile.highlight.show()
 		tile_hovered.emit(hovered_tile)
 		_show_tooltip(hovered_tile)
@@ -206,6 +205,7 @@ func _generate_grid() -> void:
 			grid_container.add_child(tile)
 			grid[x][y] = tile
 			tile.calculate_rendement()
+	_place_blockers()
 	var start_tile = get_tile(START_X, START_Y)
 	start_tile.calculate_rendement()
 	start_tile.infest()
@@ -239,3 +239,31 @@ func regenerate() -> void:
 	
 	# Regénère
 	_generate_grid()
+
+func _place_blockers() -> void:
+	# Cases protégées : tuile de départ + ses 4 voisins
+	var protected := []
+	protected.append(Vector2i(START_X, START_Y))
+	for offset in [Vector2i(0,-1), Vector2i(0,1), Vector2i(-1,0), Vector2i(1,0)]:
+		protected.append(Vector2i(START_X + offset.x, START_Y + offset.y))
+
+	for x in MAP_WIDTH:
+		for y in MAP_HEIGHT:
+			# Vérifie si protégée
+			if Vector2i(x, y) in protected:
+				continue
+
+			# 20% de chance
+			if randf() > 0.30:
+				continue
+
+			# Vérifie qu'aucun voisin n'est déjà bloqué
+			var has_blocked_neighbor := false
+			for offset in [Vector2i(0,-1), Vector2i(0,1), Vector2i(-1,0), Vector2i(1,0)]:
+				var neighbor = get_tile(x + offset.x, y + offset.y)
+				if neighbor != null and neighbor.is_blocked:
+					has_blocked_neighbor = true
+					break
+
+			if not has_blocked_neighbor:
+				grid[x][y].block()

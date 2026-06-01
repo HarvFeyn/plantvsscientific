@@ -98,7 +98,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("4_ir15t")
 theme_override_font_sizes/font_size = 22
-text = "0"
+text = "50"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -123,12 +123,13 @@ texture = ExtResource("2_lbhrr")
 
 [node name="TerreType" type="Label" parent="HUD/DisplayInfoTuile" unique_id=425625573]
 layout_mode = 0
-offset_left = 75.0
-offset_top = 647.0
-offset_right = 136.0
-offset_bottom = 678.0
+offset_left = 82.0
+offset_top = 648.0
+offset_right = 143.0
+offset_bottom = 679.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.25882354)
 theme_override_fonts/font = ExtResource("4_ir15t")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 
 [node name="CircleWater1" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=2073692368]
 layout_mode = 0
@@ -136,7 +137,7 @@ offset_left = 74.00001
 offset_top = 713.0
 offset_right = 114.00001
 offset_bottom = 753.0
-scale = Vector2(0.6, 0.6)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("5_u5sy4")
 
 [node name="CircleWater2" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=904963245]
@@ -145,7 +146,7 @@ offset_left = 113.00001
 offset_top = 713.0
 offset_right = 153.0
 offset_bottom = 753.0
-scale = Vector2(0.6, 0.6)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("6_0tnpc")
 
 [node name="CircleWater3" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=1654377516]
@@ -154,7 +155,7 @@ offset_left = 151.0
 offset_top = 713.0
 offset_right = 191.0
 offset_bottom = 753.0
-scale = Vector2(0.6, 0.6)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("6_0tnpc")
 
 [node name="CircleColza1" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=1061381913]
@@ -163,7 +164,7 @@ offset_left = 74.00001
 offset_top = 678.0
 offset_right = 114.00001
 offset_bottom = 718.0
-scale = Vector2(0.6, 0.6)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("6_gee14")
 
 [node name="CircleColza2" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=1045745528]
@@ -172,7 +173,7 @@ offset_left = 113.00001
 offset_top = 678.0
 offset_right = 153.0
 offset_bottom = 718.0
-scale = Vector2(0.6, 0.6)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("6_0tnpc")
 
 [node name="CircleColza3" type="TextureRect" parent="HUD/DisplayInfoTuile" unique_id=1000984572]
@@ -181,7 +182,7 @@ offset_left = 151.0
 offset_top = 678.0
 offset_right = 191.0
 offset_bottom = 718.0
-scale = Vector2(0.6, 0.6)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("6_0tnpc")
 
 [node name="EnemyControl" type="Control" parent="HUD" unique_id=626475114]
@@ -327,6 +328,96 @@ scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_ir15t")
 animation = &"hover"
 frame_progress = 0.38660392
+
+[node name="ShopPopup" type="Control" parent="HUD" unique_id=833680920]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ShopOverlay" type="ColorRect" parent="HUD/ShopPopup" unique_id=210140266]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.59607846)
+
+[node name="ShopContent" type="VBoxContainer" parent="HUD/ShopPopup" unique_id=2068670356]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -22.0
+offset_top = -58.0
+offset_right = 22.0
+offset_bottom = 58.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ShopTitle" type="Label" parent="HUD/ShopPopup/ShopContent" unique_id=613786482]
+layout_mode = 2
+
+[node name="Cards" type="HBoxContainer" parent="HUD/ShopPopup/ShopContent" unique_id=1681174930]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Card1" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards" unique_id=1988210468]
+layout_mode = 2
+
+[node name="CardName1" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card1" unique_id=1934948747]
+layout_mode = 2
+
+[node name="CardDesc1" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card1" unique_id=1162437303]
+layout_mode = 2
+
+[node name="CardCost1" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card1" unique_id=560116922]
+layout_mode = 2
+
+[node name="BuyBtn1" type="Button" parent="HUD/ShopPopup/ShopContent/Cards/Card1" unique_id=313375650]
+layout_mode = 2
+text = "Acheter"
+
+[node name="Card2" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards" unique_id=248943786]
+layout_mode = 2
+
+[node name="CardName2" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card2" unique_id=886270228]
+layout_mode = 2
+
+[node name="CardDesc2" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card2" unique_id=377099259]
+layout_mode = 2
+
+[node name="CardCost2" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card2" unique_id=898836395]
+layout_mode = 2
+
+[node name="BuyBtn2" type="Button" parent="HUD/ShopPopup/ShopContent/Cards/Card2" unique_id=2105821374]
+layout_mode = 2
+text = "Acheter"
+
+[node name="Card3" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards" unique_id=929161961]
+layout_mode = 2
+
+[node name="CardName3" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card3" unique_id=267548194]
+layout_mode = 2
+
+[node name="CardDesc3" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card3" unique_id=390862400]
+layout_mode = 2
+
+[node name="CardCost3" type="Label" parent="HUD/ShopPopup/ShopContent/Cards/Card3" unique_id=287162158]
+layout_mode = 2
+
+[node name="BuyBtn3" type="Button" parent="HUD/ShopPopup/ShopContent/Cards/Card3" unique_id=1571059588]
+layout_mode = 2
+text = "Acheter"
+
+[node name="CloseShop" type="Button" parent="HUD/ShopPopup/ShopContent" unique_id=171195528]
+layout_mode = 2
+text = "Continuer"
 
 [node name="Map" type="Node2D" parent="." unique_id=1434601639]
 position = Vector2(0, 48)

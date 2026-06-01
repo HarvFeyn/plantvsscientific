@@ -23,7 +23,7 @@ var is_blocked_temp: bool = false
 
 const CADRE_SPRITE := preload("res://assets/sprites/cadre_all.png")
 const INFESTATION_SPRITE := preload("res://assets/sprites/orobanche.png")
-const COUT_BASE    := 20
+const COUT_BASE    := 50
 const COUT_PAR_PAS := 60
 
 const TERRE_SPRITES := [
@@ -90,7 +90,7 @@ func _ready() -> void:
 		water_sprite.scale = Vector2(2, 2)
 	else:
 		water_sprite.hide()
-	
+
 # ── Sélection ────────────────────────────────────────────────
  
 func select() -> void:
@@ -101,7 +101,11 @@ func deselect() -> void:
  
 func infest() -> void:
 	is_infested = true
+	infestation.modulate.a = 0.0
 	infestation.show()
+	var tween := create_tween()
+	tween.tween_property(infestation, "modulate:a", 1.0, 3.0)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 
 func disinfest() -> void:
 	is_infested = false
@@ -130,6 +134,8 @@ func calculate_rendement() -> void:
 func block() -> void:
 	is_blocked = true
 	rendement = 0
+	colza_sprite.hide()
+	water_sprite.hide()
 	bloqueur.show()
 	bloqueur.play("appear")
 	if is_infested:
@@ -141,7 +147,7 @@ func block_temp() -> void:
 	bloqueur_temp.play("appear")
 	if is_infested:
 		disinfest()
-		
+
 func unblock_temp() -> void:
 	is_blocked_temp = false
 	bloqueur_temp.hide()
