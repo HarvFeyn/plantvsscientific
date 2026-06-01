@@ -20,10 +20,11 @@ var is_blocked: bool = false
 @onready var bloqueur: AnimatedSprite2D = $Bloqueur
 var is_blocked_temp: bool = false
 @onready var bloqueur_temp: AnimatedSprite2D = $BloqueurTemp
+var font := load("uid://fi2wiv07digh")
 
 const CADRE_SPRITE := preload("res://assets/sprites/cadre_all.png")
 const INFESTATION_SPRITE := preload("res://assets/sprites/orobanche.png")
-const COUT_BASE    := 25
+const COUT_BASE  := 25
 
 const TERRE_SPRITES := [
 	preload("res://assets/sprites/limon.png"),
@@ -125,10 +126,10 @@ func get_cout() -> int:
 func calculate_rendement() -> void:
 	var multi_terre = 1
 	match terre:
-		TerreType.ARGILE: multi_terre = 1.25 * ModifierManager.multi_argile
+		TerreType.ARGILE: multi_terre = 1.3 * ModifierManager.multi_argile
 		TerreType.LIMON: multi_terre = 1 * ModifierManager.multi_limon
-		TerreType.TERRE_DE_GROIE: multi_terre = 1.5 * ModifierManager.multi_terre_groie
-	rendement = ceil((colzas - eau + 2) * 2 * multi_terre)
+		TerreType.TERRE_DE_GROIE: multi_terre = 1.6 * ModifierManager.multi_terre_groie
+	rendement = ceil((colzas - eau + 3) * 2 * multi_terre)
 
 func block() -> void:
 	is_blocked = true
@@ -151,3 +152,40 @@ func unblock_temp() -> void:
 	is_blocked_temp = false
 	bloqueur_temp.hide()
 	infest()
+
+func show_income(amount: int) -> void:
+	var font := load("res://assets/fonts/W95F.otf")
+	var text := "+" + str(amount)
+	
+	# Label ombre noire derrière
+	var shadow := Label.new()
+	shadow.text = text
+	shadow.add_theme_font_override("font", font)
+	shadow.add_theme_font_size_override("font_size", 24)
+	shadow.add_theme_color_override("font_color", Color.BLACK)
+	shadow.position = Vector2(64 + 2, 64 + 2)
+	add_child(shadow)
+	
+	# Label vert devant
+	var label := Label.new()
+	label.text = text
+	label.add_theme_font_override("font", font)
+	label.add_theme_font_size_override("font_size", 24)
+	label.add_theme_color_override("font_color", Color("b3ff61ff"))
+	label.position = Vector2(64, 64)
+	add_child(label)
+	
+	# Anime les deux ensemble
+	var tween := create_tween().set_parallel()
+	tween.tween_property(label,  "position:y", label.position.y  - 80, 1.0)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(shadow, "position:y", shadow.position.y - 80, 1.0)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(label,  "modulate:a", 0.0, 1.0)\
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(shadow, "modulate:a", 0.0, 1.0)\
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	
+	await tween.finished
+	label.queue_free()
+	shadow.queue_free()

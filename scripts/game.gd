@@ -74,6 +74,7 @@ var turn_income_value: int = 0
 var _dragging: bool = false
 var _drag_start: Vector2 = Vector2.ZERO
 var _cam_start: Vector2 = Vector2.ZERO
+var _displayed_graines: int = 0
 
 const CAM_ZOOM_MIN := 0.5
 const CAM_ZOOM_MAX := 1
@@ -211,20 +212,36 @@ func _on_turn_changed(_turn: int) -> void:
 	GameManager.avancement_enemy += avancement_gain
 	
 func _process_turn() -> void:
-	# Débloque les tuiles temporaires
+	# Utilise turn_income_value déjà calculé — pas de nouveau randi()
+	var total: int = 0
+	for x in map.MAP_WIDTH:
+		for y in map.MAP_HEIGHT:
+			var tile = map.get_tile(x, y)
+			if tile.is_infested and not tile.is_blocked_temp and not tile.is_blocked:
+				var amount: int = tile.rendement + ModifierManager.rendement_bonus
+				# La variation aléatoire est calculée une seule fois dans _calculate_turn_income
+				total += amount
+				tile.show_income(amount)
+	
+	GameManager.graines += turn_income_value  # ← utilise la valeur affichée
+	
 	for x in map.MAP_WIDTH:
 		for y in map.MAP_HEIGHT:
 			var tile = map.get_tile(x, y)
 			if tile.is_blocked_temp:
 				tile.unblock_temp()
 	
-	GameManager.graines += turn_income_value
 	_process_enemy_attack()
 	_calculate_turn_income()
 	
 func _on_graines_changed(value: int) -> void:
-	graines_label.text = str(value)
+	var tween := create_tween()
+	tween.tween_method(_update_graines_label, _displayed_graines, value, 0.5)
 
+func _update_graines_label(value: int) -> void:
+	_displayed_graines = value
+	graines_label.text = str(value)
+	
 func _on_avancement_changed(value: float) -> void:
 	percent_enemy.text = "%.0f%%" % value
 	_update_enemy_marker(value)
