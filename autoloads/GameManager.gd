@@ -1,5 +1,6 @@
 extends Node
 
+var main: Main
 # Signals utiles pour l'UI et les autres systèmes
 signal score_changed(new_score: int)
 signal game_paused(is_paused: bool)
@@ -17,7 +18,7 @@ signal turn_changed(turn_number: int)
 var current_turn: int = 1
 
 signal graines_changed(value: int)
-var graines: int = 50 : set = _set_graines
+var graines: int = 100 : set = _set_graines
 
 signal avancement_changed(value: float)
 

@@ -26,3 +26,7 @@ func _input(event: InputEvent) -> void:
 			GameManager.start_game()
 		else:
 			_play_video(current_index)
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		GameManager.go_to_menu()

@@ -1,3 +1,4 @@
+MarginContainer
 PanelContainer
 VBoxContainer
 Panel
@@ -6,6 +7,5 @@ Control
 TextureRect
 HBoxContainer
 RichTextLabel
-MarginContainer
 ColorRect
 Button

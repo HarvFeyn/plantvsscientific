@@ -234,15 +234,16 @@ texture = ExtResource("8_vtaks")
 
 [node name="TurnIcome" type="Label" parent="HUD/TurnControl" unique_id=2006961691]
 layout_mode = 0
-offset_left = 1019.0
+offset_left = 1011.0
 offset_top = 716.0
-offset_right = 1059.0
+offset_right = 1051.0
 offset_bottom = 744.0
-theme_override_colors/font_color = Color(0.5842228, 0.9767125, 0.4663415, 1)
+theme_override_colors/font_color = Color(0.584, 0.976, 0.467, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.13725491)
 theme_override_fonts/font = ExtResource("4_ir15t")
 theme_override_font_sizes/font_size = 22
 text = "+5"
+horizontal_alignment = 2
 
 [node name="PopupReset" type="Control" parent="HUD" unique_id=1913288018]
 layout_mode = 3
@@ -340,7 +341,7 @@ offset_right = 22.0
 offset_bottom = 58.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 80
+theme_override_constants/separation = 50
 
 [node name="PanelTitle" type="PanelContainer" parent="HUD/ShopPopup/ShopContent" unique_id=1591873442]
 layout_mode = 2
@@ -361,7 +362,7 @@ theme_override_fonts/font = ExtResource("4_ir15t")
 theme_override_font_sizes/font_size = 22
 text = "Acheter des améliorations
 Les améliorations seront perdues à votre prochaine hibernations
-Acheter une carte augment le coût des autres cartes de 100"
+Acheter une carte augment le coût des autres cartes de 50"
 horizontal_alignment = 1
 
 [node name="Cards" type="HBoxContainer" parent="HUD/ShopPopup/ShopContent" unique_id=1681174930]
@@ -383,7 +384,7 @@ theme_override_constants/margin_bottom = 50
 [node name="Card1" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1" unique_id=1988210468]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 50
+theme_override_constants/separation = 30
 
 [node name="InfosCard1" type="VBoxContainer" parent="HUD/ShopPopup/ShopContent/Cards/PanelCard1/MarginCard1/Card1" unique_id=1865402312]
 layout_mode = 2
@@ -570,6 +571,13 @@ theme_override_fonts/font = ExtResource("4_ir15t")
 theme_override_font_sizes/font_size = 22
 text = "Acheter"
 
+[node name="SuffleShop" type="Button" parent="HUD/ShopPopup/ShopContent" unique_id=514335483]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("4_ir15t")
+theme_override_font_sizes/font_size = 22
+text = "Tirer 3 nouvelles cartes pour 100 graines"
+
 [node name="CloseShop" type="Button" parent="HUD/ShopPopup/ShopContent" unique_id=171195528]
 layout_mode = 2
 size_flags_horizontal = 4
@@ -606,7 +614,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("4_ir15t")
 theme_override_font_sizes/font_size = 22
-text = "50"
+text = "100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -615,9 +623,10 @@ layout_mode = 3
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -20.0
-offset_right = 20.0
-offset_bottom = 40.0
+offset_left = -126.0
+offset_top = 20.0
+offset_right = 129.0
+offset_bottom = 100.0
 grow_horizontal = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -625,10 +634,8 @@ size_flags_vertical = 4
 [node name="ImprovementsHeader" type="Panel" parent="HUD/ImprovementsPanel" unique_id=940470576]
 custom_minimum_size = Vector2(250, 30)
 layout_mode = 0
-offset_left = -106.0
-offset_top = 20.0
-offset_right = 144.0
-offset_bottom = 60.0
+offset_right = 250.0
+offset_bottom = 40.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_264po")
 
 [node name="ImprovementsTitle" type="Label" parent="HUD/ImprovementsPanel/ImprovementsHeader" unique_id=308119743]
@@ -645,12 +652,18 @@ vertical_alignment = 1
 [node name="ImprovementsList" type="PanelContainer" parent="HUD/ImprovementsPanel" unique_id=1785767987]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 0
-offset_left = -106.0
-offset_top = 60.0
-offset_right = 144.0
-offset_bottom = 100.0
+offset_top = 39.0
+offset_right = 250.0
+offset_bottom = 79.0
 
-[node name="ImprovementsContent" type="VBoxContainer" parent="HUD/ImprovementsPanel/ImprovementsList" unique_id=1400124687]
+[node name="MarginContainer" type="MarginContainer" parent="HUD/ImprovementsPanel/ImprovementsList" unique_id=740922962]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ImprovementsContent" type="VBoxContainer" parent="HUD/ImprovementsPanel/ImprovementsList/MarginContainer" unique_id=1400124687]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4

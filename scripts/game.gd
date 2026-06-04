@@ -1,4 +1,5 @@
 extends Node2D
+class_name Main
 
 # ── Configuration caméra ──────────────────────────────────────
 const CAM_SPEED    := 600.0
@@ -51,10 +52,11 @@ const COUT_INFESTION: int = 10
 	$HUD/ShopPopup/ShopContent/Cards/PanelCard3/MarginCard3/Card3/BuyBtn3,
 ]
 @onready var close_shop_btn: Button = $HUD/ShopPopup/ShopContent/CloseShop
+@onready var suffle_shop: Button = $HUD/ShopPopup/ShopContent/SuffleShop
 
 @onready var improvements_panel: Control = $HUD/ImprovementsPanel
 @onready var improvements_list: PanelContainer = $HUD/ImprovementsPanel/ImprovementsList
-@onready var improvements_content: VBoxContainer = $HUD/ImprovementsPanel/ImprovementsList/ImprovementsContent
+@onready var improvements_content: VBoxContainer = $HUD/ImprovementsPanel/ImprovementsList/MarginContainer/ImprovementsContent
 @onready var improvements_header: Panel = $HUD/ImprovementsPanel/ImprovementsHeader
 @onready var enemy_control: Control = $HUD/EnemyControl
 
@@ -80,6 +82,10 @@ const CAM_ZOOM_MIN := 0.5
 const CAM_ZOOM_MAX := 1
 
 func _ready() -> void:
+	GameManager.main = self
+	GameManager.graines = 100
+	GameManager.current_turn = 1
+	GameManager.avancement_enemy = 0
 	GameManager.set_pause(false)
 	cam.make_current()
 	_setup_camera()
@@ -127,6 +133,7 @@ func _ready() -> void:
 	shop_popup.hide()
 	shop_overlay.mouse_entered.connect(func(): map.ui_hovered = true)
 	close_shop_btn.pressed.connect(_close_shop)
+	suffle_shop.pressed.connect(_shuffle_shop)
 	buy_buttons[0].pressed.connect(func(): _buy_card(0))
 	buy_buttons[1].pressed.connect(func(): _buy_card(1))
 	buy_buttons[2].pressed.connect(func(): _buy_card(2))
@@ -134,7 +141,9 @@ func _ready() -> void:
 	improvements_header.hide()
 	improvements_list.hide()
 	improvements_header.mouse_entered.connect(_on_improvements_entered)
+	improvements_list.mouse_entered.connect(_on_improvements_entered)
 	improvements_header.mouse_exited.connect(_on_improvements_exited)
+	improvements_list.mouse_exited.connect(_on_improvements_exited)
 	
 	enemy_control.mouse_entered.connect(_on_enemy_control_entered)
 	enemy_control.mouse_exited.connect(_on_enemy_control_exited)
@@ -178,21 +187,13 @@ func _on_tile_selected(tile) -> void:
 	if tile.is_infested or tile.is_blocked or tile.is_blocked_temp:
 		return
 	
-	# Vérifie qu'au moins un voisin est infesté
-	var neighbors: Array = map.get_neighbors(tile.grid_x, tile.grid_y)
-	var has_infested_neighbor := false
-	for neighbor in neighbors:
-		if neighbor.is_infested:
-			has_infested_neighbor = true
-			break
+	var has_infested_neighbor: bool = map.is_close_to_infest(tile.grid_x, tile.grid_y)
 	
 	if not has_infested_neighbor:
-		print("pas de voisin infesté")
 		return
 	
 	var cout: int = tile.get_cout()
 	if GameManager.graines < cout:
-		print("pas assez de graines, cout : ", cout)
 		return
 	
 	GameManager.graines -= cout
@@ -212,18 +213,14 @@ func _on_turn_changed(_turn: int) -> void:
 	GameManager.avancement_enemy += avancement_gain
 	
 func _process_turn() -> void:
-	# Utilise turn_income_value déjà calculé — pas de nouveau randi()
 	var total: int = 0
 	for x in map.MAP_WIDTH:
 		for y in map.MAP_HEIGHT:
 			var tile = map.get_tile(x, y)
-			if tile.is_infested and not tile.is_blocked_temp and not tile.is_blocked:
-				var amount: int = tile.rendement + ModifierManager.rendement_bonus
-				# La variation aléatoire est calculée une seule fois dans _calculate_turn_income
-				total += amount
-				tile.show_income(amount)
-	
-	GameManager.graines += turn_income_value  # ← utilise la valeur affichée
+			if tile.is_infested or tile.is_blocked_temp:
+				tile.show_income(tile.prod_this_turn)
+			
+	GameManager.graines += turn_income_value
 	
 	for x in map.MAP_WIDTH:
 		for y in map.MAP_HEIGHT:
@@ -252,16 +249,14 @@ func _reset_game() -> void:
 	ModifierManager.reset()
 	var bonus: int = GameManager.graines
 	map.regenerate()
-	improvements_header.hide()
 	
-	# Remet toutes les tuiles à leur état de base
 	for x in map.MAP_WIDTH:
 		for y in map.MAP_HEIGHT:
 			var tile = map.get_tile(x, y)
 			if tile.is_infested:
 				tile.is_infested = false
 				tile.disinfest()
-	# Remet la case (0,0) infestée
+	
 	var start_tile = map.get_tile(map.START_X, map.START_Y)
 	start_tile.infest()
 	
@@ -275,32 +270,49 @@ func _reset_game() -> void:
 	GameManager.graines = bonus
 	GameManager.current_turn = 1
 	AudioManager.crossfade_music(MUSIC_NORMAL)
-	ShopManager.reset_all()
-
-func _on_btn_resets_pressed() -> void:
-	_reset_game()
 
 func _process_enemy_attack() -> void:
 	var avancement: float = GameManager.avancement_enemy
-	if avancement <= 20.0:
+	if avancement <= 10.0:
 		return
 
-	var tranches: int = int((avancement - 20.0) / 10.0)
-	var tranchesTemp: int = int((avancement) / 5)
-	
-	# Calcule le nombre d'attaques de chaque type
+	var tranches: int = int(avancement / 10.0)
+	print("nb de tranche = " + str(tranches))
 	var nb_block_temp: int = 0
 	var nb_block: int = 0
+	var nb_infest: int = 0
 	
-	# Exemple de logique — adapte les % selon toi
-	if randf() * 100.0 < tranches * 30.0:
-		nb_block_temp += 1
-	if tranches >= 3 and randf() * 100.0 < tranches * 10:
-		nb_block_temp += 2
+	for x in map.MAP_WIDTH:
+		for y in map.MAP_HEIGHT:
+			var tile = map.get_tile(x, y)
+			if tile.is_infested:
+				nb_infest+=1
+				
+	print("nb infested = " + str(nb_infest))
+	
+	nb_block_temp = floor(0.5 + randf() * tranches * 0.65)
+	
+	print("rdm block = " + str(nb_block_temp))
+	
+	if tranches >= 8:
+		nb_block_temp += floor(nb_infest*0.4)
+	elif tranches >=7:
+		nb_block_temp += floor(nb_infest*0.3)
+	elif tranches >=5:
+		nb_block_temp += floor(nb_infest*0.2)
+	elif tranches >=4:
+		nb_block_temp += floor(nb_infest*0.1)
+	
+	print("total block = " + str(nb_block_temp))
+	
+	#if randf() * 100.0 < tranches * 30.0:
+		#nb_block_temp += 1
+	#if tranches >= 3 and randf() * 100.0 < tranches * 10:
+		#nb_block_temp += 2
+	
 	if randf() * 100.0 < tranches * 8:
 		nb_block += 1
-
-	# Récupère toutes les tuiles infestées disponibles (pas déjà attaquées)
+	
 	var available_tiles := []
 	for x in map.MAP_WIDTH:
 		for y in map.MAP_HEIGHT:
@@ -310,10 +322,7 @@ func _process_enemy_attack() -> void:
 
 	if available_tiles.is_empty():
 		return
-
 	available_tiles.shuffle()
-
-	# Applique d'abord les block temporaires
 	var index: int = 0
 	for i in nb_block_temp:
 		if index >= available_tiles.size():
@@ -321,12 +330,9 @@ func _process_enemy_attack() -> void:
 		available_tiles[index].block_temp()
 		index += 1
 
-	# Applique ensuite le block définitif
-	# Si une tuile a déjà reçu un block_temp, on la remplace par block définitif
 	for i in nb_block:
 		if available_tiles.is_empty():
 			break
-		# Prend la première tuile disponible — si déjà block_temp, block écrase
 		var target = available_tiles[0]
 		if target.is_blocked_temp:
 			target.unblock_temp()
@@ -437,10 +443,11 @@ func _open_popup_reset() -> void:
 	map.ui_hovered = true  # bloque dès l'ouverture
 
 func _confirm_reset() -> void:
+	ShopManager.reset_all()
+	improvements_header.hide()
 	popup_reset_control.hide()
 	map.ui_hovered = false
 	hovered_button = ""
-	_reset_game()
 	_calculate_turn_income()
 	_open_shop()
 
@@ -462,10 +469,17 @@ func _calculate_turn_income() -> void:
 	turn_income_value = 0
 	for x in map.MAP_WIDTH:
 		for y in map.MAP_HEIGHT:
-			var tile = map.get_tile(x, y)
-			if tile.is_infested:
-				turn_income_value += tile.rendement + randi() % 3 + ModifierManager.rendement_bonus
-	turn_income.text = "+" + str(turn_income_value)
+			var tile = map.get_tile(x,y)
+			map.calculate_combo_tile(x,y)
+			tile.calculate_rendement()
+			tile.calculate_prod_this_turn()
+			turn_income_value += tile.prod_this_turn
+	turn_income.text = str(turn_income_value)
+	if turn_income_value > 0:
+		turn_income.text = "+" + turn_income.text
+		turn_income.add_theme_color_override("font_color", Color(0.584, 0.976, 0.467))
+	else:
+		turn_income.add_theme_color_override("font_color", Color("e61e2eff"))
 
 func _update_music(value: float) -> void:
 	if value >= 50.0 and not _music_intense_playing:
@@ -480,12 +494,9 @@ func can_infest(tile) -> bool:
 		return false
 	if tile.is_infested or tile.is_blocked or tile.is_blocked_temp:
 		return false
-	var neighbors: Array = map.get_neighbors(tile.grid_x, tile.grid_y)
-	var has_infested_neighbor := false
-	for neighbor in neighbors:
-		if neighbor.is_infested:
-			has_infested_neighbor = true
-			break
+
+	var has_infested_neighbor = map.is_close_to_infest(tile.grid_x, tile.grid_y)
+
 	if not has_infested_neighbor:
 		return false
 	if GameManager.graines < tile.get_cout():
@@ -499,6 +510,7 @@ func _open_shop() -> void:
 	map.ui_hovered = true
 
 func _refresh_shop() -> void:
+	suffle_shop.disabled = GameManager.graines < 100
 	for i in 3:
 		var card = ShopManager.available_cards[i]
 		if card == null:
@@ -523,11 +535,16 @@ func _buy_card(index: int) -> void:
 		improvements_header.show() 
 
 func _close_shop() -> void:
+	_reset_game()
 	ShopManager.reset_shop()
 	shop_popup.hide()
 	map.ui_hovered = false
-	GameManager.graines = 50 + ModifierManager.graines_bonus
-
+	GameManager.graines = 100 + ModifierManager.graines_bonus
+	
+func _shuffle_shop() -> void:
+	ShopManager.shuffle_shop()
+	_refresh_shop()
+	
 func _recalculate_all_rendements() -> void:
 	for x in map.MAP_WIDTH:
 		for y in map.MAP_HEIGHT:
@@ -547,9 +564,8 @@ func _on_improvements_entered() -> void:
 func _on_improvements_exited() -> void:
 	map.ui_hovered = false
 	improvements_list.hide()
-
+	
 func _refresh_improvements() -> void:
-	# Vide le contenu
 	for child in improvements_content.get_children():
 		child.queue_free()
 
@@ -559,7 +575,6 @@ func _refresh_improvements() -> void:
 		improvements_content.add_child(label)
 		return
 
-	# Compte les occurrences de chaque carte
 	var counts := {}
 	for card_id in ShopManager.purchased_cards:
 		counts[card_id] = counts.get(card_id, 0) + 1
@@ -570,11 +585,12 @@ func _refresh_improvements() -> void:
 		var card_name: String = ShopManager.get_card_name(card_id)
 		label.text = card_name + (" x%d" % count if count > 1 else "")
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		improvements_content.add_child(label)
 
 func _on_enemy_control_entered() -> void:
 	#map.ui_hovered = true
-	map.show_custom_tooltip("L'avancement ennemi augmente de %d%% par tour" % int(3 * ModifierManager.avancement_multi - ModifierManager.avancement_minus) + "\n Tous les 10% d'avancement le cout des tuiles et le risque d'évenement négatif augmente")
+	map.show_custom_tooltip("L'avancement des connaissances humaines augmente de %d%% par tour" % int(3 * ModifierManager.avancement_multi - ModifierManager.avancement_minus) + "\n Tous les 10% d'avancement le cout des tuiles et le risque d'évenement négatif augmente")
 
 func _on_enemy_control_exited() -> void:
 	#map.ui_hovered = false

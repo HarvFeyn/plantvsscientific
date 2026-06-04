@@ -124,7 +124,6 @@ func _input(event: InputEvent) -> void:
 # ── Clic ──────────────────────────────────────────────────────
 
 func _handle_click() -> void:
-	print("ui_hovered : ", ui_hovered)
 	if ui_hovered:
 		return
 	var pos := get_global_mouse_position()
@@ -171,9 +170,12 @@ func _handle_hover() -> void:
 		
 
 func _show_tooltip(tile) -> void:
+	tooltip_label.show()
+	tooltip_icon.show()
+	tooltip_icon2.show()
 	if !enemy_hovered:
 		if tile.is_infested:
-			tooltip_label.text = "Production : Entre " + str(tile.rendement) + " et " + str(tile.rendement+2)
+			tooltip_label.text = "Production par tour : " + str(tile.prod_this_turn)
 			tooltip_label.add_theme_color_override("font_color", Color("4a8a2a"))
 			tooltip_icon.texture = ICON_GRAINE
 			tooltip_icon.show()
@@ -181,20 +183,30 @@ func _show_tooltip(tile) -> void:
 			tooltip_icon2.show()
 			tooltip_action_label.hide()
 		else:
-			tooltip_label.text = "Coût pour acheter la case : -" + str(tile.get_cout())
-			tooltip_label.add_theme_color_override("font_color", Color("c44040"))
-			tooltip_icon.texture = ICON_GRAINE
-			tooltip_icon2.hide()
-			if tile.is_blocked or tile.is_blocked_temp:
+			if not tile.is_blocked and not tile.is_blocked_temp:
+				tooltip_label.text = "Coût pour acheter la case : -" + str(tile.get_cout())
+				tooltip_label.add_theme_color_override("font_color", Color("c44040"))
+				tooltip_icon.texture = ICON_GRAINE
+				tooltip_icon2.hide()
+			if tile.is_blocked:
+				tooltip_label.hide()
+				tooltip_icon.hide()
+				tooltip_icon2.hide()
 				tooltip_action_label.text = "Cette case est bloquée"
 				tooltip_action_label.add_theme_color_override("font_color", Color("c44040"))
 				tooltip_action_label.show()
+			elif  tile.is_blocked_temp:
+				tooltip_label.text = "Production par tour : " + str(tile.prod_this_turn)
+				tooltip_label.add_theme_color_override("font_color", Color("c44040"))
+				tooltip_icon.texture = ICON_GRAINE
+				tooltip_icon.show()
+				tooltip_icon2.texture = ICON_FLECHE
+				tooltip_icon2.show()
+				tooltip_action_label.text = "Cette case est bloquée pendant 1 tour"
+				tooltip_action_label.add_theme_color_override("font_color", Color("c44040"))
+				tooltip_action_label.show()
 			else:
-				var has_infested_neighbor := false
-				for neighbor in get_neighbors(tile.grid_x, tile.grid_y):
-					if neighbor.is_infested:
-						has_infested_neighbor = true
-						break
+				var has_infested_neighbor = is_close_to_infest(tile.grid_x, tile.grid_y)
 				if not has_infested_neighbor:
 					tooltip_action_label.text = "Il faut déjà posséder une case adjacente"
 					tooltip_action_label.add_theme_color_override("font_color", Color("c44040"))
@@ -255,14 +267,12 @@ func get_tile(x: int, y: int):
 		return null
 	return grid[x][y]
 
-
 func get_neighbors(x: int, y: int) -> Array:
 	var neighbors := []
 	for offset in [Vector2i(0,-1), Vector2i(0,1), Vector2i(-1,0), Vector2i(1,0)]:
 		var t = get_tile(x + offset.x, y + offset.y)
 		if t: neighbors.append(t)
 	return neighbors
-
 
 func get_map_size() -> Vector2:
 	return Vector2(MAP_WIDTH * TILE_SIZE, MAP_HEIGHT * TILE_SIZE)
@@ -317,3 +327,23 @@ func show_custom_tooltip(text: String) -> void:
 	
 func hide_tooltip() -> void:
 	tooltip.hide()
+
+func calculate_combo_tile(x:int,y:int) -> void:
+	var tile = get_tile(x,y)
+	
+	tile.combo_terre = 0
+	if tile.is_infested:
+		for neighbor in get_neighbors(x, y):
+			if neighbor.is_infested and neighbor.terre == tile.terre and not neighbor.is_blocked and not neighbor.is_blocked_temp:
+				tile.combo_terre += 1
+	
+
+func is_close_to_infest(x,y) -> bool:
+	for neighbor in get_neighbors(x, y):
+		if neighbor.is_infested:
+			return true
+		if ModifierManager.jump_tile:
+			for second_neighbor in get_neighbors(neighbor.grid_x, neighbor.grid_y):
+				if second_neighbor.is_infested:
+					return true
+	return false

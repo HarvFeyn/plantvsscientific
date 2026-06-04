@@ -25,26 +25,31 @@ func _ready() -> void:
 
 func _init_cards() -> void:
 	all_cards = [
-		Card.new("rendement_up",   "Production maximale",       "Toutes les tuiles produisent 20% de plus (multiplicatif)",      300,  func(): ModifierManager.rendement_multi  *= 1.2),
-		Card.new("cout_down", "Développement", "Les tuiles coûtent 20% moins cher (multiplicatif)", 300, func(): ModifierManager.cout_multi *= 0.8),
-		Card.new("avancement_slow","Ralentir les humains", "Diminue de 1% l'avancée de la connaissance humaine par tour",  600,  func(): ModifierManager.avancement_minus  += 1),
-		Card.new("rendement_bonus","Adaptation",    "Chaque tuile produit 1 graines de plus",        250,  func(): ModifierManager.rendement_bonus   += 2),
-		Card.new("graines_bonus",  "Stock de graine",          "Reçois 50 graines à la sortie de l'hibernation",               250,  func(): ModifierManager.graines_bonus += 50),
-		Card.new("spe_argile", "Spécialiste Argile","Argile +40% de production, Limon et Terre de Groie -20% de production", 200, func(): 
-		ModifierManager.multi_argile      *= 1.4
-		ModifierManager.multi_limon       *= 0.8
-		ModifierManager.multi_terre_groie *= 0.8
+		Card.new("rendement_up",   "Production maximale",       "Toutes les tuiles produisent 10% de plus (multiplicatif)",      150,  func(): ModifierManager.rendement_multi  *= 1.1),
+		Card.new("cout_down", "Croissance", "Les tuiles coûtent 10% moins cher (multiplicatif)", 150, func(): ModifierManager.cout_multi *= 0.9),
+		Card.new("avancement_slow","Épines", "Diminue de 1% l'avancée de la connaissance humaine par tour",  600,  func(): ModifierManager.avancement_minus  += 1),
+		Card.new("rendement_bonus","Adaptation",    "Chaque tuile produit 1 graines de plus",        200,  func(): ModifierManager.rendement_bonus   += 2),
+		Card.new("graines_bonus",  "Stock de graine",          "Reçois 50 graines de plus à la sortie de l'hibernation",               200,  func(): ModifierManager.graines_bonus += 50),
+		Card.new("spe_argile", "Spécialiste Argile","Argile +20% de production, Limon et Terre de Groie -10% de production", 100, func(): 
+		ModifierManager.multi_argile      *= 1.2
+		ModifierManager.multi_limon       *= 0.9
+		ModifierManager.multi_terre_groie *= 0.9
 		),
-		Card.new("spe_limon", "Spécialiste Limon", "Limon +50% de production, Argile et Terre de Groie -20% de production", 200, func():
-		ModifierManager.multi_limon       *= 1.5
-		ModifierManager.multi_argile      *= 0.8
-		ModifierManager.multi_terre_groie *= 0.8
+		Card.new("spe_limon", "Spécialiste Limon", "Limon +25% de production, Argile et Terre de Groie -10% de production", 100, func():
+		ModifierManager.multi_limon       *= 1.25
+		ModifierManager.multi_argile      *= 0.9
+		ModifierManager.multi_terre_groie *= 0.9
 		),
-		Card.new("spe_terre_groie", "Spécialiste Terre de Groie", "Terre de Groie +30% de production, Argile et Limon -20% de production", 200, func():
-		ModifierManager.multi_terre_groie *= 1.3
-		ModifierManager.multi_argile      *= 0.8
-		ModifierManager.multi_limon       *= 0.8
+		Card.new("spe_terre_groie", "Spécialiste Terre de Groie", "Terre de Groie +15% de production, Argile et Limon -10% de production", 100, func():
+		ModifierManager.multi_terre_groie *= 1.15
+		ModifierManager.multi_argile      *= 0.9
+		ModifierManager.multi_limon       *= 0.9
 		),
+		Card.new("combo_argile", "Affinité Argile","Chaque tuile d'argile gagne +3 de production de base pour chaque autre tuile d'argile adjacente en votre possession", 250, func():  ModifierManager.combo_argile += 3),
+		Card.new("combo_limon", "Affinité Limon", "Chaque tuile de limon gagne +4 de production de base pour chaque autre tuile de limon adjacente en votre possession", 250, func(): ModifierManager.combo_limon += 4),
+		Card.new("combo_terre_groie", "Affinité Terre de Groie", "Chaque tuile de terre de groie gagne +2 de production de base pour chaque autre tuile de terre de groie adjacente en votre possession", 250, func(): ModifierManager.combo_terre_groie += 2),
+		Card.new("jump_tile", "Graine planante", "Vous pouvez répandre vos graines à une case de distance de plus", 500, func(): ModifierManager.jump_tile = true),
+		Card.new("resi", "Resilience", "Vous avez +20% de chance que la case reste infestée après le passage des humains", 200, func(): ModifierManager.resi += 0.2),
 	]
 
 func buy_card(card: Card, index: int) -> bool:
@@ -61,6 +66,14 @@ func pick_random_cards() -> void:
 	var shuffled := all_cards.filter(_is_card_available).duplicate()
 	shuffled.shuffle()
 	available_cards = shuffled.slice(0, 3)
+
+func shuffle_shop() -> bool:
+	if GameManager.graines < 100:
+		return false
+	GameManager.graines -= 100
+	available_cards = []
+	pick_random_cards()
+	return true
 
 func _replace_card(index: int) -> void:
 	var current_ids := []
@@ -83,6 +96,10 @@ func _is_card_available(card: Card) -> bool:
 	match card.id:
 		"avancement_slow":
 			return ModifierManager.avancement_minus < 2
+		"jump_tile":
+			return !ModifierManager.jump_tile
+		"resi":
+			return ModifierManager.resi < 1.0
 	return true
 
 func reset_shop() -> void:

@@ -9,7 +9,9 @@ signal tile_clicked(tile)
  
 var building = null
 var is_infested: bool = false
-var rendement: int = 5
+var rendement: int = 0
+var prod_this_turn: int = 0
+var combo_terre: int = 0
 
 # ── Références ────────────────────────────────────────────────
 @onready var sprite: Sprite2D = $Sprite2D
@@ -125,15 +127,30 @@ func get_cout() -> int:
 
 func calculate_rendement() -> void:
 	var multi_terre = 1
+	var flat_combo_terre = 0
 	match terre:
-		TerreType.ARGILE: multi_terre = 1.3 * ModifierManager.multi_argile
-		TerreType.LIMON: multi_terre = 1 * ModifierManager.multi_limon
-		TerreType.TERRE_DE_GROIE: multi_terre = 1.6 * ModifierManager.multi_terre_groie
-	rendement = ceil((colzas - eau + 3) * 2 * multi_terre)
+		TerreType.ARGILE: 
+			multi_terre = 1.2 * ModifierManager.multi_argile
+			flat_combo_terre = ModifierManager.combo_argile * combo_terre
+		TerreType.LIMON: 
+			multi_terre = 1 * ModifierManager.multi_limon
+			flat_combo_terre = ModifierManager.combo_limon * combo_terre
+		TerreType.TERRE_DE_GROIE: 
+			multi_terre = 1.4 * ModifierManager.multi_terre_groie
+			flat_combo_terre = ModifierManager.combo_terre_groie * combo_terre
+	rendement = ceil(((colzas - eau + 4 ) * 2 + flat_combo_terre + ModifierManager.rendement_bonus) * multi_terre)
 
+func calculate_prod_this_turn() -> void:
+	if is_infested and not is_blocked and not is_blocked_temp:
+		prod_this_turn = rendement  # + randi() % 3
+	elif is_blocked_temp:
+		prod_this_turn = -10
+	elif is_blocked and not is_blocked_temp:
+		prod_this_turn = 0
+		
 func block() -> void:
 	is_blocked = true
-	rendement = 0
+	calculate_rendement()
 	colza_sprite.hide()
 	water_sprite.hide()
 	bloqueur.show()
@@ -151,12 +168,17 @@ func block_temp() -> void:
 func unblock_temp() -> void:
 	is_blocked_temp = false
 	bloqueur_temp.hide()
-	infest()
-
+	if randf() < ModifierManager.resi:
+		infest()
+	calculate_rendement()
+	calculate_prod_this_turn()
+	
 func show_income(amount: int) -> void:
 	var font := load("res://assets/fonts/W95F.otf")
-	var text := "+" + str(amount)
-	
+	var text := str(amount)
+	if amount > 0:
+		text = "+" + text
+		
 	# Label ombre noire derrière
 	var shadow := Label.new()
 	shadow.text = text
@@ -171,7 +193,10 @@ func show_income(amount: int) -> void:
 	label.text = text
 	label.add_theme_font_override("font", font)
 	label.add_theme_font_size_override("font_size", 24)
-	label.add_theme_color_override("font_color", Color("b3ff61ff"))
+	if amount > 0:
+		label.add_theme_color_override("font_color", Color("b3ff61ff"))
+	else:
+		label.add_theme_color_override("font_color", Color("e61e2eff"))
 	label.position = Vector2(64, 64)
 	add_child(label)
 	

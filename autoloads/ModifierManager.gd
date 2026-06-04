@@ -9,6 +9,11 @@ var avancement_minus:  int
 var multi_argile:      float
 var multi_limon:       float
 var multi_terre_groie: float
+var combo_argile:      int
+var combo_limon:       int
+var combo_terre_groie: int
+var jump_tile: bool
+var resi: float
 
 func _ready() -> void:
 	reset()
@@ -23,3 +28,8 @@ func reset() -> void:
 	multi_argile      = 1.0
 	multi_limon       = 1.0
 	multi_terre_groie = 1.0
+	combo_argile = 0
+	combo_limon = 0
+	combo_terre_groie = 0
+	jump_tile = false
+	resi = 0.0
