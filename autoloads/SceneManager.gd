@@ -9,6 +9,7 @@ var _color_rect: ColorRect = null
 var _is_transitioning := false
 const RIDEAU_HAUT_TEX := preload("uid://crd57adsuxhwv")
 const RIDEAU_BAS_TEX  := preload("uid://702f0ev8kmmc")
+const rideau_sfx :AudioStream= preload("uid://dmuquyefqvkg7")
 var _rideau_haut: Sprite2D = null
 var _rideau_bas: Sprite2D = null
 
@@ -42,6 +43,7 @@ func _ready() -> void:
 	_color_rect.modulate.a = 0.0
 	_color_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_transition.add_child(_color_rect)
+	
 
 func go_to(path: String) -> void:
 	if _is_transitioning:
@@ -59,6 +61,9 @@ func go_to(path: String) -> void:
 
 
 func _fade_in() -> void:
+	AudioManager.play_sfx(
+		rideau_sfx, -15
+	)
 	var viewport_size := get_viewport().get_visible_rect().size
 	var tween := get_tree().create_tween().set_parallel()
 	tween.tween_property(_rideau_haut, "position:y", 0.0, FADE_DURATION)\

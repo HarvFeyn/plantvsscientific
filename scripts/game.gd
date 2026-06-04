@@ -70,6 +70,8 @@ var hovered_button: String = ""
 const TURN_BTN_NORMAL := preload("uid://xldyiccvygfc")
 const TURN_BTN_HOVER  := preload("uid://nq6syptfxea3")
 const TURN_BTN_CLICK  := preload("uid://cdx0lfhgvh5h2")
+const PLANTS_SFX :AudioStream= preload("uid://bfjcrfcxrmh6x")
+
 
 var turn_income_value: int = 0
 
@@ -195,7 +197,7 @@ func _on_tile_selected(tile) -> void:
 	var cout: int = tile.get_cout()
 	if GameManager.graines < cout:
 		return
-	
+	AudioManager.play_sfx(PLANTS_SFX,-5)
 	GameManager.graines -= cout
 	tile.infest()
 	_calculate_turn_income()
